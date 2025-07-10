@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Something went wrong</title>
+		<link rel="stylesheet" href="{{ assets('css/sprout.min.css') }}">
+		<style>
+			body {
+				display: grid;
+				place-items: center;
+				height: 100vh;
+				text-align: center;
+				padding: 2rem;
+			}
+			h1 {
+				font-size: 3rem;
+				margin-bottom: 0.5rem;
+			}
+			p {
+				font-size: 1.2rem;
+				color: #666;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>⚠️ 503 Service Unavailable</h1>
+			<p>The service is temporarily unavailable. Please try again later.</p>
+			{% if error_id %}
+				<small>Error ID:
+					{{ error_id }}</small>
+			{% endif %}
+		</main>
+	</body>
+</html>

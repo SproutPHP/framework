@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Error</title>
+		<link rel="stylesheet" href="{{ assets('css/sprout.min.css') }}">
+	</head>
+	<body style="text-align: center; padding: 3rem;">
+		<h1>🪵 Oops!</h1>
+		<p>Something went wrong. Please try again later.</p>
+		{% if error_id %}
+			<small style="display:block; margin-top: 2rem;">Error ID:
+				{{ error_id }}</small>
+		{% endif %}
+	</body>
+</html>

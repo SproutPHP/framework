@@ -1,0 +1,61 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies
+/vendor/
+/node_modules/
+composer.phar
+
+# Application storage and logs
+/storage/
+/logs/
+*.log
+
+# Cache and temporary files
+/cache/
+/tmp/
+*.tmp
+*.temp
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build and compiled files
+/build/
+/dist/
+*.min.js
+*.min.css
+
+# Database files
+*.sqlite
+*.db
+
+# Backup files
+*.bak
+*.backup
+
+# Testing
+/coverage/
+.phpunit.result.cache
+
+# Composer
+composer.lock
+
+# Application specific
+/public/uploads/
+/public/storage/

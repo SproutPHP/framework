@@ -1,0 +1,32 @@
+{
+  "name": "sprout/sprout-php",
+  "description": "A minimalistic php-framework designed for go-to developer without the need for javascript or heavy modules.",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Yanik Kumar",
+      "email": "believemasters@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "twig/twig": "4.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Core\\": "core/"
+    },
+    "files": [
+      "core/helpers.php"
+    ]
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "php scripts/postinstall.php"
+    ],
+    "post-update-cmd": [
+      "php scripts/postinstall.php"
+    ]
+  }
+}

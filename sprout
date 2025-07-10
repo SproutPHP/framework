@@ -1,0 +1,132 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$command = $argv[1] ?? null;
+$target = $argv[2] ?? null;
+
+switch ($command) {
+    case 'grow':
+        echo "🌱 SproutPHP growing at http://localhost:9090\n";
+        passthru('php -S localhost:9090 -t public');
+        break;
+
+    case 'make:controller':
+        if (!$target) {
+            echo "❌ Please provide a controller name.\n";
+            exit(1);
+        }
+        require 'scripts/make_controller.php';
+        break;
+
+    case 'make:model':
+        if (!$target) {
+            echo "❌ Please provide a model name.\n";
+            exit(1);
+        }
+        require 'scripts/make_model.php';
+        break;
+
+    case 'make:view':
+        if (!$target) {
+            echo "❌ Please provide a view name.\n";
+            exit(1);
+        }
+        require 'scripts/make_view.php';
+        break;
+
+    case 'make:resource':
+        if (!$target) {
+            echo "❌ Please provide a resource name.\n";
+            exit(1);
+        }
+        require 'scripts/make_resource.php';
+        break;
+
+    case 'make:route':
+        if (!$target) {
+            echo "❌ Please provide a route name.\n";
+            exit(1);
+        }
+        require 'scripts/make_route.php';
+        break;
+
+    case 'env':
+        $envValue = $target ?? null;
+
+        if (!$envValue || !in_array($envValue, ['local', 'production'])) {
+            echo "❌ Please provide a valid environment: local | production\n";
+            exit(1);
+        }
+
+        $envPath = __DIR__ . '/.env';
+        $lines = file($envPath);
+        $newLines = [];
+
+        foreach ($lines as $line) {
+            if (strpos($line, 'APP_ENV=') === 0) {
+                $newLines[] = "APP_ENV={$envValue}\n";
+            } else {
+                $newLines[] = $line;
+            }
+        }
+
+        file_put_contents($envPath, implode('', $newLines));
+        echo "✅ Environment set to '{$envValue}'\n";
+        break;
+
+    case 'logs':
+        $logFile = __DIR__ . '/storage/logs/error.log';
+
+        if (!file_exists($logFile)) {
+            echo "⚠️ No logs found at: storage/logs/error.log\n";
+            exit(0);
+        }
+
+        $lines = file($logFile);
+        $count = count($lines);
+
+        echo "📄 Showing last 20 lines of error.log:\n\n";
+
+        $lastLines = array_slice($lines, max(0, $count - 20));
+
+        foreach ($lastLines as $line) {
+            echo $line;
+        }
+        break;
+
+    case 'seed':
+        echo "🌾 This feature will generate starter files (coming soon!)\n";
+        break;
+
+    case 'prune':
+        echo "✂️  Pruning unused files (feature coming soon)\n";
+        break;
+
+    case 'bloom':
+        echo "🌸 Preparing production build (coming soon)\n";
+        break;
+
+    case 'version':
+        echo "SproutPHP v1.0.0\n";
+        break;
+
+    case 'help':
+    default:
+        echo "🌿 SproutPHP CLI\n";
+        echo "Usage:\n";
+        echo "  php sprout grow             Start the development server\n";
+        echo "  php sprout make:controller  Make a controller\n";
+        echo "  php sprout make:model       Make a model\n";
+        echo "  php sprout make:view        Make a view\n";
+        echo "  php sprout make:resource    Auto-generate MVC resources including routes\n";
+        echo "  php sprout make:route       Register routes for your particular controller\n";
+        echo "  php sprout env production   To switch to production|local\n";
+        echo "  php sprout logs             Shows recent errors from logs\n";
+        echo "  php sprout seed             Generate files (coming soon)\n";
+        echo "  php sprout prune            Remove unwanted files (coming soon)\n";
+        echo "  php sprout bloom            Build for production (coming soon)\n";
+        echo "  php sprout version          Show framework version\n";
+        break;
+}

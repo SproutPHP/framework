@@ -1,0 +1,20 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}Home — SproutPHP{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p>Welcome to <strong>SproutPHP</strong>, the seed-to-plant minimal PHP framework 🌱</p>
+  <p>HTMX-ready, JS-optional, and developer-happy.</p>
+
+  <button 
+    hx-get="/home" 
+    hx-target="#result" 
+    hx-swap="innerHTML"
+    class="contrast"
+  >
+    Click to Sprout
+  </button>
+
+  <div id="result" style="margin-top: 1rem;"></div>
+{% endblock %}

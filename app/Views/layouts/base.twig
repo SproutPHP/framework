@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" hx-boost="true" data-theme="dark">
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}
+      SproutPHP
+			{% endblock %}
+		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="{{ assets('css/sprout.min.css') }}">
+		<script src="{{ assets('js/sprout.min.js') }}"></script>
+	</head>
+	<body>
+		<main class="container"> {% block content %}{% endblock %}
+			</main>
+		</body>
+	</html>
