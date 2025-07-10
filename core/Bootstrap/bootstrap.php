@@ -3,10 +3,10 @@
 /**
  * Load router
  */
-use Core\Router;
-use Core\Request;
-use Core\Route;
-use Core\ErrorHandler;
+use Core\Routing\Router;
+use Core\Http\Request;
+use Core\Routing\Route;
+use Core\Error\ErrorHandler;
 
 require_once __DIR__ . '/helpers.php';
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace Core\Error;
 
 class ErrorHandler
 {
@@ -60,7 +60,7 @@ class ErrorHandler
                 ? "errors/{$code}"
                 : "errors/error"; // fallback
 
-            echo \Core\View::render($viewFile, ['error_id' => $errorId]);
+            echo \Core\View\View::render($viewFile, ['error_id' => $errorId]);
         }
 
         exit;

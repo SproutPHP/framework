@@ -1,6 +1,6 @@
 <?php
 
-use Core\View;
+use Core\View\View;
 
 /**
  * view helper accepting template-name and data
@@ -101,6 +101,6 @@ if (!function_exists('abort')) {
     function abort(int $code, string $message = '')
     {
         $message = $message ?: "HTTP Error $code";
-        \Core\ErrorHandler::render($message, __FILE__, __LINE__, null, $code);
+        \Core\Error\ErrorHandler::render($message, __FILE__, __LINE__, null, $code);
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace Core;
+namespace Core\Routing;
+
+use Core\Http\Request;
 
 class Router
 {
@@ -49,7 +51,7 @@ class Router
                 echo "<h2>404: Route not found</h2>";
                 echo "</div>";
             } else {
-                echo \Core\View::render('errors/404');
+                echo \Core\View\View::render('errors/404');
             }
             exit;
         }

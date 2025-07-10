@@ -1,6 +1,6 @@
 <?php
 
-use Core\Route;
+use Core\Routing\Route;
 
 Route::get('/', function () {
     return view('home', ['title' => 'SproutPHP Home']);
