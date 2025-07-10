@@ -3,10 +3,12 @@
 
 use Core\Console\Commands\MakeComponent;
 use Core\Console\Commands\MakeController;
+use Core\Console\Commands\MakeMigration;
 use Core\Console\Commands\MakeModel;
 use Core\Console\Commands\MakeResource;
 use Core\Console\Commands\MakeRoute;
 use Core\Console\Commands\MakeView;
+use Core\Console\Commands\Migrate;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -32,7 +34,16 @@ switch ($command) {
             echo "❌ Please provide a model name.\n";
             exit(1);
         }
-        MakeModel::handle($target);
+        $flags = array_slice($argv, 3);
+        MakeModel::handle($target, $flags);
+        break;
+
+    case 'make:migration':
+        MakeMigration::handle($argv[2]);
+        break;
+
+    case 'migrate':
+        Migrate::handle();
         break;
 
     case 'make:view':
