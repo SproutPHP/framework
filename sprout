@@ -39,7 +39,8 @@ switch ($command) {
             echo "❌ Please provide a view name.\n";
             exit(1);
         }
-        MakeView::handle($target);
+        $flags = array_slice($argv, 3);
+        MakeView::handle($target, $flags);
         break;
 
     case 'make:resource':

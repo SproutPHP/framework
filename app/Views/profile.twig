@@ -1,0 +1,13 @@
+{% extends 'layouts/base.twig' %}
+
+{% block content %}
+    <h2>HTMX Demo Page</h2>
+
+    <button hx-get="/profile/load" hx-target="#demo" hx-swap="innerHTML">
+        Load Partial via HTMX
+    </button>
+
+    <div id="demo" style="margin-top:1rem;">
+        <em>Click the button above to load content.</em>
+    </div>
+{% endblock %}
