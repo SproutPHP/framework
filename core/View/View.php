@@ -23,9 +23,11 @@ class View
             self::$twig->addFunction(new TwigFunction('assets', 'assets'));
         }
 
-        if (function_exists('debug') || function_exists('dd')) {
+        if (function_exists('debug') || function_exists('dd') || function_exists('env')) {
             self::$twig->addFunction(new \Twig\TwigFunction('debug', 'debug'));
             self::$twig->addFunction(new \Twig\TwigFunction('dd', 'dd'));
+            self::$twig->addFunction(new \Twig\TwigFunction('env', fn($key) => env($key)));
+
         }
     }
 

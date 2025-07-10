@@ -138,6 +138,43 @@ switch ($command) {
         }
         break;
 
+    case 'info':
+        echo "🌿 SproutPHP Info\n";
+        echo "--------------------\n";
+
+        $release = getLatestRelease();
+        // Version (optional to make dynamic later)
+        echo "Framework Version: {$release}\n";
+
+        // Check HTMX
+        $htmx = file_exists(__DIR__ . '/public/assets/js/sprout.min.js') ? '✔️' : '❌';
+        echo "HTMX: {$htmx} loaded\n";
+
+        // Check PicoCSS
+        $css = file_exists(__DIR__ . '/public/assets/css/sprout.min.css') ? '✔️' : '❌';
+        echo "PicoCSS: {$css} loaded\n";
+
+        // Twig check
+        if (class_exists(\Twig\Environment::class)) {
+            echo "Twig Engine: ✔️ enabled\n";
+        } else {
+            echo "Twig Engine: ❌ not available\n";
+        }
+
+        // Environment
+        $env = env('APP_ENV') ?? 'unknown';
+        echo "Environment: {$env}\n";
+
+        // Debug
+        $debug = env('APP_DEBUG') === 'true' ? '✔️' : '❌';
+        echo "Debug Mode: {$debug}\n";
+
+        // PHP Version
+        echo "PHP Version: " . PHP_VERSION . "\n";
+
+        break;
+
+
     case 'help':
     default:
         echo "🌿 SproutPHP CLI\n";
@@ -154,5 +191,6 @@ switch ($command) {
         echo "  php sprout prune            Remove unwanted files (coming soon)\n";
         echo "  php sprout bloom            Build for production (coming soon)\n";
         echo "  php sprout version          Show framework version\n";
+        echo "  php sprout info             Show framework information\n";
         break;
 }
