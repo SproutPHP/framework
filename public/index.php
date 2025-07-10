@@ -1,4 +1,5 @@
 <?php
+define('SPROUT_START', microtime(true));
 
 /**
  * Enable error reporting (Only in DEV)

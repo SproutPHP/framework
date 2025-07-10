@@ -2,6 +2,7 @@
 
 namespace Core\View;
 
+use Core\Support\Debugbar;
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
 use Twig\TwigFunction;
@@ -27,12 +28,16 @@ class View
             self::$twig->addFunction(new \Twig\TwigFunction('debug', 'debug'));
             self::$twig->addFunction(new \Twig\TwigFunction('dd', 'dd'));
             self::$twig->addFunction(new \Twig\TwigFunction('env', fn($key) => env($key)));
-
         }
     }
 
     public static function render($template, $data = [])
     {
+        if (env('APP_DEBUG') === 'true') {
+            $data['debugbar'] = Debugbar::render();
+            $data['app_debug'] = true;
+        }
+        
         if (!self::$twig) {
             self::init();
         }
