@@ -2,9 +2,12 @@
 
 namespace App\Controllers;
 
-class HomeController 
+class HomeController
 {
-    public function index() {
-        return "<p>A minimilistic php-framework designed for go-to developer without the need for javascript or heavy modules. 🌳</p>";
+    public function index()
+    {
+        $release = getLatestRelease();
+        return "<p>A minimilistic php-framework designed for go-to developer without the need for javascript or heavy modules. 🌳</p>
+        <small>SproutPHP latest release: <strong>$release</strong></small>";
     }
 }

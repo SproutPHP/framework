@@ -104,3 +104,30 @@ if (!function_exists('abort')) {
         \Core\Error\ErrorHandler::render($message, __FILE__, __LINE__, null, $code);
     }
 }
+
+/**
+ * Get the latest App Release
+ */
+if (!function_exists('getLatestRelease')) {
+    function getLatestRelease()
+    {
+        $repo = env('SPROUT_REPO', 'SproutPHP/framework');
+        $userAgent = env('SPROUT_USER_AGENT', 'sproutphp-app');
+        $url = "https://api.github.com/repos/$repo/releases";
+        $opts = [
+            "http" => [
+                "header" => "User-Agent: $userAgent\r\n"
+            ]
+        ];
+        $context = stream_context_create($opts);
+        $json = @file_get_contents($url, false, $context);
+        $data = json_decode($json, true);
+
+        if (is_array($data) && count($data) > 0) {
+            $tag = $data[0]['tag_name'] ?? 'unknown';
+            $isPrerelease = $data[0]['prerelease'] ? ' (pre-release)' : '';
+            return $tag . $isPrerelease;
+        }
+        return 'unknown';
+    }
+}
