@@ -115,7 +115,27 @@ switch ($command) {
         break;
 
     case 'version':
-        echo "SproutPHP v1.0.0\n";
+        if ($argv[1] === 'version') {
+            $repo = 'SproutPHP/framework'; // change to your repo
+            $url = "https://api.github.com/repos/$repo/releases";
+            $opts = [
+                "http" => [
+                    "header" => "User-Agent: sprout-cli\r\n"
+                ]
+            ];
+            $context = stream_context_create($opts);
+            $json = file_get_contents($url, false, $context);
+            $data = json_decode($json, true);
+
+            if (is_array($data) && count($data) > 0) {
+                $tag = $data[0]['tag_name'] ?? 'unknown';
+                $isPrerelease = $data[0]['prerelease'] ? ' (pre-release)' : '';
+                echo "SproutPHP latest release: $tag$isPrerelease\n";
+            } else {
+                echo "SproutPHP latest release: unknown\n";
+            }
+            exit;
+        }
         break;
 
     case 'help':
