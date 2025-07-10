@@ -33,7 +33,3 @@ Route::get('/boom', function () {
 Route::get('/test500', function () {
     throw new Exception("Manual 500 test triggered.");
 });
-// Auto-generated HTMX demo route:
-Route::get('/profile/load', function(){
-    return view('profile', ['title' => 'profile Page']);
-});
