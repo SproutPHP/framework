@@ -7,7 +7,12 @@ class MakeController
     public static function handle($name)
     {
         $class = ucfirst($name);
-        $path = __DIR__ . "/../../../app/Controllers/{$class}.php";
+        $dir = __DIR__ . "/../../../app/Controllers/";
+        $path = "{$dir}/{$class}.php";
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
 
         if (file_exists($path)) {
             echo "❌ Controller already exists: {$class}.php\n";

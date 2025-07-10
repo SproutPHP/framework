@@ -7,7 +7,12 @@ class MakeComponent
     public static function handle($name)
     {
         $name = strtolower(trim($name));
-        $file = __DIR__ . '/../../../app/Views/Components/' . $name . '.twig';
+        $dir = __DIR__ . '/../../../app/Views/Components/';
+        $file = "{$dir}/{$name}.twig";
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
 
         if (file_exists($file)) {
             echo "⚠️ Component '{$name}' already exists.\n";
