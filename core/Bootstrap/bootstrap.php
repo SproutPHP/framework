@@ -3,6 +3,8 @@
 /**
  * Load router
  */
+
+use Core\Bootstrap\LoadRoutes;
 use Core\Routing\Router;
 use Core\Http\Request;
 use Core\Routing\Route;
@@ -16,6 +18,6 @@ ErrorHandler::register();
 /**
  * Load routes
  */
-require_once __DIR__.'/../../routes/web.php';
+LoadRoutes::boot();
 
 $router->dispatch($request);

@@ -194,6 +194,7 @@ switch ($command) {
         echo "  php sprout make:view        Make a view (use --htmx flag to create htmx view & route setup)\n";
         echo "  php sprout make:resource    Auto-generate MVC resources including routes\n";
         echo "  php sprout make:route       Register routes for your particular controller\n";
+        echo "  php sprout make:component   Make a component\n";
         echo "  php sprout env production   To switch to production|local\n";
         echo "  php sprout logs             Shows recent errors from logs\n";
         echo "  php sprout seed             Generate files (coming soon)\n";
