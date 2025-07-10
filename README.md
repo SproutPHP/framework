@@ -50,7 +50,7 @@ SproutPHP is for developers who know PHP, HTML, and CSS, and want to build fast,
 
 ```php
 // routes/web.php
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/home', 'HomeController@index');
 ```
 
 ```php
