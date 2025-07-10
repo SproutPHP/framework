@@ -1,6 +1,12 @@
 #!/usr/bin/env php
 <?php
 
+use Core\Console\Commands\MakeController;
+use Core\Console\Commands\MakeModel;
+use Core\Console\Commands\MakeResource;
+use Core\Console\Commands\MakeRoute;
+use Core\Console\Commands\MakeView;
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 $command = $argv[1] ?? null;
@@ -17,7 +23,7 @@ switch ($command) {
             echo "❌ Please provide a controller name.\n";
             exit(1);
         }
-        require 'scripts/make_controller.php';
+        MakeController::handle($target);
         break;
 
     case 'make:model':
@@ -25,7 +31,7 @@ switch ($command) {
             echo "❌ Please provide a model name.\n";
             exit(1);
         }
-        require 'scripts/make_model.php';
+        MakeModel::handle($target);
         break;
 
     case 'make:view':
@@ -33,7 +39,7 @@ switch ($command) {
             echo "❌ Please provide a view name.\n";
             exit(1);
         }
-        require 'scripts/make_view.php';
+        MakeView::handle($target);
         break;
 
     case 'make:resource':
@@ -41,7 +47,7 @@ switch ($command) {
             echo "❌ Please provide a resource name.\n";
             exit(1);
         }
-        require 'scripts/make_resource.php';
+        MakeResource::handle($target);
         break;
 
     case 'make:route':
@@ -49,7 +55,7 @@ switch ($command) {
             echo "❌ Please provide a route name.\n";
             exit(1);
         }
-        require 'scripts/make_route.php';
+        MakeRoute::handle($target);
         break;
 
     case 'env':

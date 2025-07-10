@@ -14,18 +14,18 @@
   },
   "autoload": {
     "psr-4": {
-        "Core\\": "core/"
+      "Core\\": "core/"
     },
     "files": [
-      "core/helpers.php"
+      "core/Support/helpers.php"
     ]
   },
   "scripts": {
     "post-install-cmd": [
-      "php scripts/postinstall.php"
+      "Core\\Console\\PostInstall::run"
     ],
     "post-update-cmd": [
-      "php scripts/postinstall.php"
+      "Core\\Console\\PostInstall::run"
     ]
   }
 }
