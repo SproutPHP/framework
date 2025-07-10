@@ -54,7 +54,7 @@ if (!function_exists('env')) {
         static $env = [];
 
         if (empty($env)) {
-            $file = __DIR__ . '/../.env';
+            $file = __DIR__ . '/../../.env';
             if (!file_exists($file)) {
                 return $default;
             }
@@ -79,7 +79,7 @@ if (!function_exists('env')) {
 if (!function_exists('log_error')) {
     function log_error(string $message): string
     {
-        $logDir = __DIR__ . '/../storage/logs';
+        $logDir = __DIR__ . '/../../storage/logs';
         if (!is_dir($logDir)) {
             mkdir($logDir, 0777, true);
         }
