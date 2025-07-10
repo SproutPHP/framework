@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Core\Console\Commands\MakeComponent;
 use Core\Console\Commands\MakeController;
 use Core\Console\Commands\MakeModel;
 use Core\Console\Commands\MakeResource;
@@ -57,6 +58,14 @@ switch ($command) {
             exit(1);
         }
         MakeRoute::handle($target);
+        break;
+
+    case 'make:component':
+        if (!$target) {
+            echo "❌ Please provide a component name.\n";
+            exit(1);
+        }
+        MakeComponent::handle($target);
         break;
 
     case 'env':
@@ -175,7 +184,6 @@ switch ($command) {
 
         break;
 
-
     case 'help':
     default:
         echo "🌿 SproutPHP CLI\n";
@@ -183,7 +191,7 @@ switch ($command) {
         echo "  php sprout grow             Start the development server\n";
         echo "  php sprout make:controller  Make a controller\n";
         echo "  php sprout make:model       Make a model\n";
-        echo "  php sprout make:view        Make a view\n";
+        echo "  php sprout make:view        Make a view (use --htmx flag to create htmx view & route setup)\n";
         echo "  php sprout make:resource    Auto-generate MVC resources including routes\n";
         echo "  php sprout make:route       Register routes for your particular controller\n";
         echo "  php sprout env production   To switch to production|local\n";
