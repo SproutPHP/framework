@@ -3,6 +3,7 @@
 namespace Core\Routing;
 
 use Core\Http\Middleware\MiddlewareKernel;
+use Core\Http\Middleware\MiddlewareRegistry;
 use Core\Http\Request;
 
 class Router
@@ -62,9 +63,21 @@ class Router
         $route = $this->routes[$method][$uri];
 
         /**
-         * Collecting middleware Global and Route-specific
+         * Collecting middleware Route-specific
          */
         $routeMiddleware = $route->middleware ?? [];
+
+        // Resolve the alias to classNames
+        $resolvedMiddleware = [];
+        foreach ($routeMiddleware as $mw) {
+            if (class_exists($mw)) {
+                $resolvedMiddleware[] = $mw;
+            } elseif (isset(MiddlewareRegistry::$map[$mw])) {
+                $resolvedMiddleware[] = MiddlewareRegistry::$map[$mw];
+            } else {
+                throw new \Exception("Unknown middleware: $mw");
+            }
+        }
 
         $kernel = new MiddlewareKernel($routeMiddleware);
 
