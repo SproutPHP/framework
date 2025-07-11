@@ -9,6 +9,7 @@ use Core\Console\Commands\MakeResource;
 use Core\Console\Commands\MakeRoute;
 use Core\Console\Commands\MakeView;
 use Core\Console\Commands\Migrate;
+use Core\Console\Commands\Build;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -195,6 +196,10 @@ switch ($command) {
 
         break;
 
+    case 'build':
+        Build::run();
+        break;
+
     case 'help':
     default:
         echo "🌿 SproutPHP CLI\n";
@@ -210,6 +215,7 @@ switch ($command) {
         echo "  php sprout logs             Shows recent errors from logs\n";
         echo "  php sprout seed             Generate files (coming soon)\n";
         echo "  php sprout prune            Remove unwanted files (coming soon)\n";
+        echo "  php sprout build            Build for production (minifies, strips dev code, precompiles)\n";
         echo "  php sprout bloom            Build for production (coming soon)\n";
         echo "  php sprout version          Show framework version\n";
         echo "  php sprout info             Show framework information\n";
