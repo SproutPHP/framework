@@ -1,5 +1,6 @@
 <?php
 
+use App\Middlewares\RouteTestMiddleware;
 use Core\Routing\Route;
 
 Route::get('/', function () {
@@ -33,3 +34,6 @@ Route::get('/boom', function () {
 Route::get('/test500', function () {
     throw new Exception("Manual 500 test triggered.");
 });
+Route::get('/route-middleware-test', function () {
+    return 'Route-specific middleware test response.';
+})->middleware('route-test');
