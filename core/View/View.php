@@ -19,27 +19,56 @@ class View
             'debug' => true,
         ]);
 
-        // Register global functions like assets() debug() if it exists as Twig doesn’t have direct access to PHP global functions by default
-        if (function_exists('assets')) {
-            self::$twig->addFunction(new TwigFunction('assets', 'assets'));
-        }
+        // Register global helper functions like assets() debug() if it exists as Twig doesn't have direct access to PHP global functions by default
+        self::registerAllHelpers();
+    }
+    
+    /**
+     * Get All PHP Helpers that are currently defined
+     */
+    private static function discoverHelpers() {
+        $functions = get_defined_functions();
+        return $functions['user'];
+    }
 
-        if (function_exists('debug') || function_exists('dd') || function_exists('env')) {
-            self::$twig->addFunction(new \Twig\TwigFunction('debug', 'debug'));
-            self::$twig->addFunction(new \Twig\TwigFunction('dd', 'dd'));
-            self::$twig->addFunction(new \Twig\TwigFunction('env', fn($key) => env($key)));
+    /**
+     * Register all helpers found in $helperFunctions
+     */
+    private static function registerAllHelpers(){
+        $helperFunctions = self::discoverHelpers();
+
+        foreach($helperFunctions as $functionName) {
+            if(function_exists($functionName)) {
+                self::$twig->addFunction(new TwigFunction($functionName, $functionName));
+            }
         }
     }
 
     public static function render($template, $data = [])
     {
+        if (!self::$twig) {
+            self::init();
+        }
+
+        // Check if this is an AJAX/HTMX request
+        if (Debugbar::isAjaxRequest() && env('APP_DEBUG') === 'true') {
+            // Reset debugbar for this request
+            Debugbar::resetForRequest();
+            
+            // Render the template first
+            $content = self::$twig->render($template . '.twig', $data);
+            
+            // Append debugbar to the response
+            $debugbar = Debugbar::render();
+            
+            echo $content . $debugbar;
+            return;
+        }
+
+        // Regular request handling
         if (env('APP_DEBUG') === 'true') {
             $data['debugbar'] = Debugbar::render();
             $data['app_debug'] = true;
-        }
-        
-        if (!self::$twig) {
-            self::init();
         }
 
         echo self::$twig->render($template . '.twig', $data);

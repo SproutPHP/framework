@@ -131,3 +131,19 @@ if (!function_exists('getLatestRelease')) {
         return 'unknown';
     }
 }
+
+/**
+ * Check if current request is AJAX or HTMX
+ */
+if (!function_exists('is_ajax_request')) {
+    function is_ajax_request(): bool
+    {
+        return (
+            isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+        ) || (
+            isset($_SERVER['HTTP_HX_REQUEST']) && 
+            $_SERVER['HTTP_HX_REQUEST'] === 'true'
+        );
+    }
+}

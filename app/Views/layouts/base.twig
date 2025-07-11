@@ -13,20 +13,22 @@
 		<script src="{{ assets('js/sprout.min.js') }}"></script>
 	</head>
 	<body>
-		<main class="container"> {% block content %}{% endblock %}
-			</main>
+		<main class="container">
+			{% include 'components/navbar.twig' %}
+			{% block content %}{% endblock %}
+		</main>
 
-			{% if env('APP_ENV') == 'local' %}
-				<div style="position:fixed;top:10px;right:10px;background:#eef;border:1px solid #ccd;padding:0.5rem;font-family:monospace;font-size:0.8rem;border-radius:4px;">
-					⚡ HTMX Active
-					<br/>
-					📃
-					<a href="https://htmx.org/docs/" target="_blank">HTMX Docs ↗</a>
-				</div>
-			{% endif %}
+		{% if env('APP_ENV') == 'local' %}
+			<div style="z-index:9999;position:fixed;bottom:75px;right:10px;background:#eef;border:1px solid #ccd;padding:0.5rem;font-family:monospace;font-size:0.8rem;border-radius:4px;">
+				⚡ HTMX Active
+				<br/>
+				📃
+				<a href="https://htmx.org/docs/" target="_blank">HTMX Docs ↗</a>
+			</div>
+		{% endif %}
 
-			{% if app_debug %}
-				{{ debugbar|raw }}
-			{% endif %}
-		</body>
-	</html>
+		{% if app_debug %}
+			{{ debugbar|raw }}
+		{% endif %}
+	</body>
+</html>
