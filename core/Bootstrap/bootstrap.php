@@ -5,6 +5,7 @@
  */
 
 use App\Middlewares\VerifyCsrfToken;
+use App\Middlewares\XssProtection;
 use Core\Bootstrap\LoadRoutes;
 use Core\Routing\Router;
 use Core\Http\Request;
@@ -27,6 +28,7 @@ LoadRoutes::boot();
  */
 $globalMiddleware = [
     VerifyCsrfToken::class,
+    XssProtection::class,
 ];
 
 $kernel = new MiddlewareKernel($globalMiddleware);
