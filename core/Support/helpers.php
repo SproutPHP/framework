@@ -139,11 +139,28 @@ if (!function_exists('is_ajax_request')) {
     function is_ajax_request(): bool
     {
         return (
-            isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+            isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
             strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
         ) || (
-            isset($_SERVER['HTTP_HX_REQUEST']) && 
+            isset($_SERVER['HTTP_HX_REQUEST']) &&
             $_SERVER['HTTP_HX_REQUEST'] === 'true'
         );
+    }
+}
+
+/**
+ * CSRF Token
+ */
+if (!function_exists('csrf_field')) {
+    function csrf_field()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (empty($_SESSION['_csrf_token'])) {
+            $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
+        }
+        $token = $_SESSION['_csrf_token'];
+        return '<input type="hidden" name="_csrf_token" value="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
     }
 }

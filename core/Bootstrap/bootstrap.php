@@ -4,6 +4,7 @@
  * Load router
  */
 
+use App\Middlewares\VerifyCsrfToken;
 use Core\Bootstrap\LoadRoutes;
 use Core\Routing\Router;
 use Core\Http\Request;
@@ -25,8 +26,7 @@ LoadRoutes::boot();
  * Gloabl Middlewares
  */
 $globalMiddleware = [
-    // \App\Middlewares\SomeMiddleware::class,
-    // Add more middleware here
+    VerifyCsrfToken::class,
 ];
 
 $kernel = new MiddlewareKernel($globalMiddleware);
