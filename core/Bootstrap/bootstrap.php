@@ -24,7 +24,6 @@ LoadRoutes::boot();
 /**
  * Gloabl Middlewares
  */
-// Define your global middleware here
 $globalMiddleware = [
     // \App\Middlewares\SomeMiddleware::class,
     // Add more middleware here
