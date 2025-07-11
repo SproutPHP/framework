@@ -46,13 +46,29 @@ class View
 
     public static function render($template, $data = [])
     {
+        if (!self::$twig) {
+            self::init();
+        }
+
+        // Check if this is an AJAX/HTMX request
+        if (Debugbar::isAjaxRequest() && env('APP_DEBUG') === 'true') {
+            // Reset debugbar for this request
+            Debugbar::resetForRequest();
+            
+            // Render the template first
+            $content = self::$twig->render($template . '.twig', $data);
+            
+            // Append debugbar to the response
+            $debugbar = Debugbar::render();
+            
+            echo $content . $debugbar;
+            return;
+        }
+
+        // Regular request handling
         if (env('APP_DEBUG') === 'true') {
             $data['debugbar'] = Debugbar::render();
             $data['app_debug'] = true;
-        }
-        
-        if (!self::$twig) {
-            self::init();
         }
 
         echo self::$twig->render($template . '.twig', $data);

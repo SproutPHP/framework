@@ -34,6 +34,11 @@ class DB
         return self::$queries;
     }
 
+    public static function resetQueryLog()
+    {
+        self::$queries = [];
+    }
+
     public static function logQuery($sql, $params, $start, $end)
     {
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
