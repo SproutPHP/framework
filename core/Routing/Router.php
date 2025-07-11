@@ -2,38 +2,41 @@
 
 namespace Core\Routing;
 
+use Core\Http\Middleware\MiddlewareKernel;
 use Core\Http\Request;
 
 class Router
 {
     protected $routes = [];
 
-    /**
-     * Registers a GET & POST route with URI and Callback
-     */
+    public  function registerRoute($route)
+    {
+        $this->routes[$route->method][$route->uri] = $route;
+    }
+
     public function get($uri, $callback)
     {
-        $this->routes['GET'][$uri] = $callback;
+        return Route::get($uri, $callback);
     }
 
     public function post($uri, $callback)
     {
-        $this->routes['POST'][$uri] = $callback;
+        return Route::post($uri, $callback);
     }
 
     public function put($uri, $callback)
     {
-        $this->routes['PUT'][$uri] = $callback;
+        return Route::put($uri, $callback);
     }
 
     public function patch($uri, $callback)
     {
-        $this->routes['PATCH'][$uri] = $callback;
+        return Route::patch($uri, $callback);
     }
 
     public function delete($uri, $callback)
     {
-        $this->routes['DELETE'][$uri] = $callback;
+        return Route::delete($uri, $callback);
     }
 
     /**
@@ -56,35 +59,45 @@ class Router
             exit;
         }
 
-        $callback = $this->routes[$method][$uri];
+        $route = $this->routes[$method][$uri];
 
         /**
-         * If it is a closure
+         * Collecting middleware Global and Route-specific
          */
-        if (is_callable($callback)) {
-            echo $callback();
-            return;
-        }
+        $routeMiddleware = $route->middleware ?? [];
 
-        /**
-         * If it is a string like 'SiteController@index'
-         */
-        if (is_string($callback)) {
-            list($controllerName, $methodName) = explode('@', $callback);
+        $kernel = new MiddlewareKernel($routeMiddleware);
 
-            $controllerClass = 'App\\Controllers\\' . $controllerName;
+        $coreHandler = function ($request) use ($route) {
+            $callback = $route->action;
 
-            if (class_exists($controllerClass)) {
-                $controller = new $controllerClass;
-
-                if (method_exists($controller, $methodName)) {
-                    echo $controller->$methodName();
-                    return;
-                }
+            /**
+             * If it is a closure
+             */
+            if (is_callable($callback)) {
+                return $callback();
             }
 
-            http_response_code(500);
-            echo "Controller or method not found";
-        }
+            /**
+             * If it is a string like 'SiteController@index'
+             */
+            if (is_string($callback)) {
+                list($controllerName, $methodName) = explode('@', $callback);
+
+                $controllerClass = 'App\\Controllers\\' . $controllerName;
+
+                if (class_exists($controllerClass)) {
+                    $controller = new $controllerClass;
+
+                    if (method_exists($controller, $methodName)) {
+                        return $controller->$methodName();
+                    }
+                }
+
+                http_response_code(500);
+                return "Controller or method not found";
+            }
+        };
+        return $kernel->handle($request, $coreHandler);
     }
 }
