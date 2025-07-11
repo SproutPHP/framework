@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * Load router
@@ -9,6 +9,7 @@ use Core\Routing\Router;
 use Core\Http\Request;
 use Core\Routing\Route;
 use Core\Error\ErrorHandler;
+use Core\Http\Middleware\MiddlewareKernel;
 
 $router = new Router();
 $request = Request::capture();
@@ -20,4 +21,18 @@ ErrorHandler::register();
  */
 LoadRoutes::boot();
 
-$router->dispatch($request);
+/**
+ * Gloabl Middlewares
+ */
+// Define your global middleware here
+$globalMiddleware = [
+    // \App\Middlewares\SomeMiddleware::class,
+    // Add more middleware here
+];
+
+$kernel = new MiddlewareKernel($globalMiddleware);
+$response = $kernel->handle($request, function ($request) use ($router) {
+    return $router->dispatch($request);
+});
+
+echo $response;

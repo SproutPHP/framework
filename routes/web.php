@@ -8,6 +8,17 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index');
 
+Route::post('/toggle-theme', function () {
+    $currentTheme = $_COOKIE['theme'] ?? 'light';
+    $newTheme = $currentTheme === 'light' ? 'dark' : 'light';
+    
+    // Set cookie for theme preference
+    setcookie('theme', $newTheme, time() + (365 * 24 * 60 * 60), '/');
+    
+    // Return updated navbar with correct theme and icon
+    return view('Components/navbar', ['theme' => $newTheme]);
+});
+
 // Example HTTP method routes (test with Postman or curl)
 Route::post('/submit', function () {
     return 'POST received';
