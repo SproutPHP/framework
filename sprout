@@ -10,6 +10,7 @@ use Core\Console\Commands\MakeRoute;
 use Core\Console\Commands\MakeView;
 use Core\Console\Commands\Migrate;
 use Core\Console\Commands\Build;
+use Core\Console\Commands\MakeMiddleware;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -78,6 +79,14 @@ switch ($command) {
             exit(1);
         }
         MakeComponent::handle($target);
+        break;
+
+    case 'make:middleware':
+        if (!$target) {
+            echo "❌ Please provide a middleware name.\n";
+            exit(1);
+        }
+        MakeMiddleware::handle($target);
         break;
 
     case 'env':
@@ -211,6 +220,7 @@ switch ($command) {
         echo "  php sprout make:resource    Auto-generate MVC resources including routes\n";
         echo "  php sprout make:route       Register routes for your particular controller\n";
         echo "  php sprout make:component   Make a component\n";
+        echo "  php sprout make:middleware  Make a middleware\n";
         echo "  php sprout env production   To switch to production|local\n";
         echo "  php sprout logs             Shows recent errors from logs\n";
         echo "  php sprout seed             Generate files (coming soon)\n";
