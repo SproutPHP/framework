@@ -25,7 +25,7 @@ class MakeView
             {% extends 'layouts/base.twig' %}
 
             {% block content %}
-                <h2>HTMX Demo Page</h2>
+                <h2>HTMX Demo Page for $name</h2>
 
                 <button hx-get="/" hx-target="#demo" hx-swap="innerHTML">
                     Load Partial via HTMX
