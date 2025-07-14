@@ -253,8 +253,25 @@ SproutPHP includes a post-install script that lets you choose your preferred Pic
   ```bash
   php core/Console/PostInstall.php
   ```
+- Or, use the CLI command to update PicoCSS interactively:
+  ```bash
+  php sprout install:pico
+  ```
 - Or, manually download your preferred PicoCSS file from [jsdelivr PicoCSS CDN](https://cdn.jsdelivr.net/npm/@picocss/pico@latest/css/) and place it in `public/assets/css/sprout.min.css`.
 
 ### Advanced
 - All PicoCSS builds and color themes are available. See the [PicoCSS documentation](https://picocss.com/docs/) for more details on each build type and theme.
+
+## Production Build (bloom Command)
+
+To prepare your SproutPHP app for production, use the `bloom` command:
+
+```bash
+php sprout bloom
+```
+
+This will run the production build process (minifies, strips dev code, precompiles, etc.).
+
+- The old `build` command is now replaced by `bloom` for clarity and branding.
+- Use this command before deploying your app to production.
 
