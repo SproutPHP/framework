@@ -8,7 +8,7 @@ class HomeController
     {
         $release = getLatestRelease();
         $appName = config('app.name', 'SproutPHP');
-        return "<div style='text-align: center'><p>A minimilistic php-framework designed for go-to developer without the need for javascript or heavy modules. 🌳</p>
+        return "<div style='text-align: center'><p>A minimalist php-framework designed for go-to developer without the need for javascript or heavy modules. 🌳</p>
         <small>{$appName} latest release: <strong>$release</strong></small></div>";
     }
 }

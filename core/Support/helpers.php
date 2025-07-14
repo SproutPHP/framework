@@ -73,7 +73,16 @@ if (!function_exists('env')) {
             }
         }
 
-        return $env[$key] ?? $default;
+        $value = $env[$key] ?? $default;
+        // Cast boolean-like strings to real booleans
+        if (is_string($value)) {
+            $lower = strtolower($value);
+            if ($lower === 'true') return true;
+            if ($lower === 'false') return false;
+            if ($lower === '1') return true;
+            if ($lower === '0') return false;
+        }
+        return $value;
     }
 }
 

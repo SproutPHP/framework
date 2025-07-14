@@ -197,6 +197,28 @@ Sometimes you want a link to always trigger a full page reload (for example, you
 - Use these attributes for any link that should always reload the full page, such as your site home or links to external sites.
 - This prevents issues where the page loses its CSS/JS context due to HTMX fragment swaps.
 
+## CORS Middleware
+
+SproutPHP includes a built-in CORS middleware, registered globally by default but disabled in config/security.php:
+
+- To enable CORS, set `'enabled' => true` in the `'cors'` section of `config/security.php` or set `CORS_ENABLED=true` in your `.env` file.
+- Configure allowed origins, methods, and headers in the same config file or via environment variables.
+- The middleware will automatically set the appropriate CORS headers and handle preflight (OPTIONS) requests.
+- By default, CORS is **disabled** for security. Enable only if you need cross-origin requests (e.g., for APIs or frontend apps).
+
+**Example config/security.php:**
+```php
+'cors' => [
+    'enabled' => env('CORS_ENABLED', false),
+    'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', '*')),
+    'allowed_methods' => explode(',', env('CORS_ALLOWED_METHODS', 'GET,POST,PUT,DELETE')),
+    'allowed_headers' => explode(',', env('CORS_ALLOWED_HEADERS', 'Content-Type,Authorization')),
+],
+```
+
+**Security Note:**
+- Only enable CORS for trusted origins in production. Use `*` for development only.
+
 ## CLI Reference
 
 Run `php sprout` for all available commands, including:

@@ -19,6 +19,7 @@ return [
     'global_middleware' => [
         \App\Middlewares\VerifyCsrfToken::class,
         \App\Middlewares\XssProtection::class,
+        \App\Middlewares\CorsMiddleware::class,
     ],
     
     // Session settings
