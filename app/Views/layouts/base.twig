@@ -16,7 +16,11 @@
 		<main class="container" style="flex:1 0 auto;">
 			{% include 'components/navbar.twig' %}
 			<div id="main-content">
-				{% block content %}{% endblock %}
+				{% block content %}
+					{% if content is defined %}
+						{{ content|raw }}
+					{% endif %}
+				{% endblock %}
 			</div>
 		</main>
 

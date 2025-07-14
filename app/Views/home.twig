@@ -24,5 +24,11 @@
 			Click to Sprout
 		</button>
 		<div id="result" style="margin-top: 1rem;"></div>
+		<!-- main_content block is used for fragment injection by render_fragment_or_full helper -->
+		<div id="main-content">
+			{% if main_content is defined %}
+				{{ main_content|raw }}
+			{% endif %}
+		</div>
 	</div>
 {% endblock %}

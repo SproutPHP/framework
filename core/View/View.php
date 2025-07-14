@@ -60,7 +60,7 @@ class View
         }
     }
 
-    public static function render($template, $data = [])
+    public static function render($template, $data = [], $return = false)
     {
         if (!self::$twig) {
             self::init();
@@ -77,6 +77,9 @@ class View
             // Append debugbar to the response
             $debugbar = Debugbar::render();
             
+            if ($return) {
+                return $content . $debugbar;
+            }
             echo $content . $debugbar;
             return;
         }
@@ -87,6 +90,10 @@ class View
             $data['app_debug'] = true;
         }
 
-        echo self::$twig->render($template . '.twig', $data);
+        $output = self::$twig->render($template . '.twig', $data);
+        if ($return) {
+            return $output;
+        }
+        echo $output;
     }
 }

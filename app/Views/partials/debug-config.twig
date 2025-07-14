@@ -1,0 +1,7 @@
+<h2>Config Debug</h2>
+<p>Config function exists: {{ config_exists ? 'Yes' : 'No' }}</p>
+<p>App config loaded: {{ app_config_loaded ? 'Yes' : 'No' }}</p>
+<p>Global middleware count: {{ middleware_count }}</p>
+{% for mw in middlewares %}
+    <p>Middleware: {{ mw.name }} (exists: {{ mw.exists ? 'Yes' : 'No' }})</p>
+{% endfor %} 
