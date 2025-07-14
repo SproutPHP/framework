@@ -36,7 +36,7 @@ class Debugbar
 
     public static function render()
     {
-        if (env('APP_DEBUG') !== 'true') return;
+        if (!env('APP_DEBUG')) return;
 
         $endTime = microtime(true);
         $startTime = defined('REQUEST_START') ? REQUEST_START : SPROUT_START;
