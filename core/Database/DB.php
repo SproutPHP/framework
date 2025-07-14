@@ -14,14 +14,24 @@ class DB
     {
         if (self::$pdo) return self::$pdo;
 
-        $host = env('DB_HOST', 'localhost');
-        $db = env('DB_NAME', 'sprout');
-        $user = env('DB_USER', 'root');
-        $pass = env('DB_PASS', '');
-        $dsn  = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+        $connection = config('database.default', 'mysql');
+        $config = config("database.connections.$connection");
+        
+        if (!$config) {
+            die("❌ Database connection '$connection' not found in config.");
+        }
+
+        $host = $config['host'] ?? 'localhost';
+        $port = $config['port'] ?? 3306;
+        $database = $config['database'] ?? 'sprout';
+        $username = $config['username'] ?? 'root';
+        $password = $config['password'] ?? '';
+        $charset = $config['charset'] ?? 'utf8mb4';
+        
+        $dsn = "mysql:host=$host;port=$port;dbname=$database;charset=$charset";
 
         try {
-            self::$pdo = new PDO($dsn, $user, $pass);
+            self::$pdo = new PDO($dsn, $username, $password);
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return self::$pdo;
         } catch (PDOException $ex) {

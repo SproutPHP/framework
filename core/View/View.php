@@ -13,10 +13,15 @@ class View
 
     public static function init()
     {
-        $loader = new FilesystemLoader(__DIR__ . '/../../app/Views');
+        $viewsPath = __DIR__ . '/../../app/Views';
+        $loader = new FilesystemLoader($viewsPath);
+        
+        $twigConfig = config('view.twig', []);
         self::$twig = new Environment($loader, [
-            'cache' => false,
-            'debug' => true,
+            'cache' => $twigConfig['cache'] ?? false,
+            'debug' => $twigConfig['debug'] ?? true,
+            'auto_reload' => $twigConfig['auto_reload'] ?? true,
+            'strict_variables' => $twigConfig['strict_variables'] ?? false,
         ]);
 
         // Register global helper functions like assets() debug() if it exists as Twig doesn't have direct access to PHP global functions by default
@@ -51,7 +56,7 @@ class View
         }
 
         // Check if this is an AJAX/HTMX request
-        if (Debugbar::isAjaxRequest() && env('APP_DEBUG') === 'true') {
+        if (Debugbar::isAjaxRequest() && config('app.debug', false)) {
             // Reset debugbar for this request
             Debugbar::resetForRequest();
             
@@ -66,7 +71,7 @@ class View
         }
 
         // Regular request handling
-        if (env('APP_DEBUG') === 'true') {
+        if (config('app.debug', false)) {
             $data['debugbar'] = Debugbar::render();
             $data['app_debug'] = true;
         }

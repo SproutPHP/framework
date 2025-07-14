@@ -24,12 +24,28 @@ ErrorHandler::register();
 LoadRoutes::boot();
 
 /**
+ * Test config loading
+ */
+if (!function_exists('config')) {
+    throw new \Exception("Config helper function not found. Check if helpers.php is loaded.");
+}
+
+/**
  * Gloabl Middlewares
  */
-$globalMiddleware = [
+$globalMiddleware = config('app.global_middleware', [
     VerifyCsrfToken::class,
     XssProtection::class,
-];
+]);
+
+// Debug middleware loading
+if (config('app.debug', false)) {
+    foreach ($globalMiddleware as $middleware) {
+        if (!class_exists($middleware)) {
+            throw new \Exception("Middleware class '$middleware' not found. Check autoloading.");
+        }
+    }
+}
 
 $kernel = new MiddlewareKernel($globalMiddleware);
 $response = $kernel->handle($request, function ($request) use ($router) {

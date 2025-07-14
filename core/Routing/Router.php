@@ -50,7 +50,7 @@ class Router
 
         if (!isset($this->routes[$method][$uri])) {
             http_response_code(404);
-            if (env('APP_ENV') === 'local') {
+            if (config('app.env', 'local') === 'local') {
                 echo "<div style='padding:1.5rem; font-family:monospace; background:#fff3f3; border:1px solid #ffb3b3; color:#b30000;'>";
                 echo "<h2>404: Route not found</h2>";
                 echo "</div>";

@@ -7,7 +7,8 @@ class HomeController
     public function index()
     {
         $release = getLatestRelease();
+        $appName = config('app.name', 'SproutPHP');
         return "<p>A minimilistic php-framework designed for go-to developer without the need for javascript or heavy modules. 🌳</p>
-        <small>SproutPHP latest release: <strong>$release</strong></small>";
+        <small>{$appName} latest release: <strong>$release</strong></small>";
     }
 }

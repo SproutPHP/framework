@@ -111,8 +111,8 @@ if (!function_exists('abort')) {
 if (!function_exists('getLatestRelease')) {
     function getLatestRelease()
     {
-        $repo = env('SPROUT_REPO', 'SproutPHP/framework');
-        $userAgent = env('SPROUT_USER_AGENT', 'sproutphp-app');
+        $repo = config('app.repo', 'SproutPHP/framework');
+        $userAgent = config('app.user_agent', 'sproutphp-app');
         $url = "https://api.github.com/repos/$repo/releases";
         $opts = [
             "http" => [
@@ -162,5 +162,39 @@ if (!function_exists('csrf_field')) {
         }
         $token = $_SESSION['_csrf_token'];
         return '<input type="hidden" name="_csrf_token" value="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
+    }
+}
+
+/**
+ * Config Helper
+ */
+if (!function_exists('config')) {
+    function config($key, $default = null) {
+        static $configs = [];
+        
+        $segments = explode('.', $key);
+        $file = $segments[0];
+        
+        if (!isset($configs[$file])) {
+            $configPath = __DIR__ . '/../../config/' . $file . '.php';
+            if (file_exists($configPath)) {
+                $configs[$file] = require $configPath;
+            } else {
+                return $default;
+            }
+        }
+        
+        $value = $configs[$file];
+        array_shift($segments); // Remove the file name from segments
+        
+        foreach ($segments as $segment) {
+            if (is_array($value) && array_key_exists($segment, $value)) {
+                $value = $value[$segment];
+            } else {
+                return $default;
+            }
+        }
+        
+        return $value;
     }
 }

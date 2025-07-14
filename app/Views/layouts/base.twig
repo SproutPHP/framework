@@ -5,7 +5,7 @@
 		<meta name="htmx-powered-by" content="SproutPHP">
 		<title>
 			{% block title %}
-				SproutPHP
+				{{ config('app.name', 'SproutPHP') }}
 			{% endblock %}
 		</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
 			{% block content %}{% endblock %}
 		</main>
 
-		{% if env('APP_ENV') == 'local' %}
+		{% if config('app.env', 'local') == 'local' %}
 			<div style="z-index:9999;position:fixed;bottom:75px;right:10px;background:#eef;border:1px solid #ccd;padding:0.5rem;font-family:monospace;font-size:0.8rem;border-radius:4px;">
 				⚡ HTMX Active
 				<br/>

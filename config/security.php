@@ -9,7 +9,13 @@ return [
     
     'xss' => [
         'enabled' => env('XSS_PROTECTION', true),
-        'mode' => env('XSS_MODE', 'block'),
+        'mode' => env('XSS_MODE', 'block'), // 'block', 'sanitize', or '0' to disable
+    ],
+    
+    'csp' => [
+        'enabled' => env('CSP_ENABLED', true),
+        'report_only' => env('CSP_REPORT_ONLY', false),
+        'report_uri' => env('CSP_REPORT_URI', null),
     ],
     
     'cors' => [
