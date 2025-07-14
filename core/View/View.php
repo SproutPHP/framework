@@ -19,9 +19,9 @@ class View
         $twigConfig = config('view.twig', []);
         
         // Configure cache properly
+        $cacheEnv = $twigConfig['cache'] ?? false;
         $cachePath = false; // Default to no cache
-        if ($twigConfig['cache'] && $twigConfig['cache'] !== false) {
-            // If cache is enabled, use a proper cache directory
+        if ($cacheEnv) {
             $cachePath = __DIR__ . '/../../storage/twig-cache';
             if (!is_dir($cachePath)) {
                 mkdir($cachePath, 0777, true);
@@ -34,6 +34,11 @@ class View
             'auto_reload' => $twigConfig['auto_reload'] ?? true,
             'strict_variables' => $twigConfig['strict_variables'] ?? false,
         ]);
+
+        // Register Twig DebugExtension if debug is enabled
+        if ($twigConfig['debug'] ?? false) {
+            self::$twig->addExtension(new \Twig\Extension\DebugExtension());
+        }
 
         // Register helpers for Twig: auto-register all from helpers.php, merge with config('view.twig_helpers') if set.
         self::registerExplicitHelpers();

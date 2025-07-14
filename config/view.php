@@ -23,6 +23,7 @@ return [
         'is_ajax_request',
         'csrf_field',
         'config',
+        'is_htmx_request'
     ],
 
     'paths' => [
