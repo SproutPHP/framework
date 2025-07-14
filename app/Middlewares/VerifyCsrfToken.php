@@ -11,7 +11,6 @@ class VerifyCsrfToken implements MiddlewareInterface
     {
         // Check CSRF on state-changeing request
         if (in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'PATCH', 'DELETE'])) {
-            session_start();
             $token = $_POST['_csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
             $sessionToken = $_SESSION['_csrf_token'] ?? null;
 

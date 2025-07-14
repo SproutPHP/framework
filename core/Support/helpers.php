@@ -172,9 +172,6 @@ if (!function_exists('is_ajax_request')) {
 if (!function_exists('csrf_field')) {
     function csrf_field()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
         if (empty($_SESSION['_csrf_token'])) {
             $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
         }

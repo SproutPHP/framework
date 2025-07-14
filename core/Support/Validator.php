@@ -1,6 +1,6 @@
 <?php
 
-namespace Sprout\Core\Support;
+namespace Core\Support;
 
 class Validator 
 {
@@ -47,19 +47,19 @@ class Validator
         }
     }
 
-    protected function validateRequired($fileld) 
+    protected function validateRequired($field) 
     {
         if(empty($this->data[$field]))
         {
-            $this->errors[$field] = 'The ' . $fileld . ' field is required.';
+            $this->errors[$field] = 'The ' . $field . ' field is required.';
         }
     }
 
     protected function validateEmail($field)
     {
-        if(!$filter_var($this->data[$field] ?? '', FILTER_VALIDATE_EMAIL))
+        if(!filter_var($this->data[$field] ?? '', FILTER_VALIDATE_EMAIL))
         {
-            $this->errors[$fileld] = 'The ' . $field . ' must be a valid email address.';
+            $this->errors[$field] = 'The ' . $field . ' must be a valid email address.';
         }
     }
 
