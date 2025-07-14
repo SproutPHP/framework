@@ -10,4 +10,14 @@ class MiddlewareRegistry
         'route-test-mw' => \App\Middlewares\RouteTestMiddleware::class,
         // Register your middlewares here
     ];
+    
+    public static function get($alias)
+    {
+        return self::$map[$alias] ?? null;
+    }
+    
+    public static function register($alias, $class)
+    {
+        self::$map[$alias] = $class;
+    }
 }

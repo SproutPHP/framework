@@ -11,17 +11,40 @@ class XssProtection implements MiddlewareInterface
     {
         $response = $next($request);
 
-        header("X-XSS-Protection: 1; mode=block");
+        // Get security configuration
+        $xssEnabled = config('security.xss.enabled', true);
+        $xssMode = config('security.xss.mode', 'block');
+        
+        if ($xssEnabled) {
+            header("X-XSS-Protection: 1; mode={$xssMode}");
+        }
+        
         header("X-Content-Type-Options: nosniff");
         
-        // Set relaxed ContentSecurityPolicy in development, strict in production
-        if ((function_exists('env') && env('APP_ENV') === 'local') || (function_exists('env') && env('APP_DEBUG') === 'true')) {
-            header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://img.shields.io; object-src 'none';");
-        } else {
-            // Production: strict ContentSecurityPolicy
-            header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none';");
+        // Set Content Security Policy based on environment
+        $cspEnabled = config('security.csp.enabled', true);
+        if ($cspEnabled) {
+            $cspPolicy = $this->getCspPolicy();
+            header("Content-Security-Policy: {$cspPolicy}");
         }
         
         return $response;
+    }
+    
+    private function getCspPolicy(): string
+    {
+        $env = config('app.env', 'local');
+        $debug = config('app.debug', false);
+        
+        // Base CSP policy
+        $basePolicy = "default-src 'self'; script-src 'self'; object-src 'none';";
+        
+        if ($env === 'local' || $debug) {
+            // Development: relaxed policy
+            return $basePolicy . " style-src 'self' 'unsafe-inline'; img-src 'self' https://img.shields.io;";
+        } else {
+            // Production: strict policy
+            return $basePolicy . " style-src 'self'; img-src 'self';";
+        }
     }
 }

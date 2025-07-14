@@ -36,7 +36,7 @@ class ErrorHandler
 
     public static function render($message, $file, $line, $trace = null, $code = 500)
     {
-        if (env('APP_ENV') === 'local' && env('APP_DEBUG') === 'true') {
+        if (config('app.env', 'local') === 'local' && config('app.debug', false)) {
             echo "<div style='padding:1.5rem; font-family:monospace; background:#fff3f3; border:1px solid #ffb3b3; color:#b30000;'>";
             echo "<h2>🍂 SproutPHP Error</h2>";
             echo "<strong>Message:</strong> $message<br>";
