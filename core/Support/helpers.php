@@ -1,5 +1,6 @@
 <?php
 
+use Core\Support\Validator;
 use Core\View\View;
 
 /**
@@ -247,5 +248,5 @@ if (!function_exists('render_fragment_or_full')) {
  */
 function validate($data, $rules)
 {
-    return new \Sprout\Core\Support\Validator($data, $rules);
+    return new Validator($data, $rules);
 }
