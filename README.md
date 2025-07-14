@@ -1,6 +1,7 @@
 # SproutPHP — Minimalist, Batteries-Included PHP Framework
 
 ## 🌱 Why "Sprout"?
+
 SproutPHP is a **growing and budding framework**—a tiny sprout with the ambition to become a solid tree. It starts small, fast, and minimal, but is designed to evolve and grow with the needs of its community. The name "Sprout" reflects this progressive, ever-improving philosophy. If you want to be part of something that starts simple and grows strong, you’re in the right place!
 
 ## Philosophy
@@ -40,6 +41,7 @@ SproutPHP is for developers who know PHP, HTML, and CSS, and want to build fast,
 8. **Create models in** `app/Models/` for database access.
 
 ## Included by Default
+
 - **HTMX** for modern, interactive UIs (already loaded in your base template)
 - **PicoCSS** for beautiful, minimal styling (already loaded in your base template)
 - **Twig** for templating
@@ -68,6 +70,7 @@ class HomeController {
 ```
 
 ## Why Minimal?
+
 - **Faster response times**
 - **Lower memory usage**
 - **Easier to understand and debug**
@@ -75,35 +78,64 @@ class HomeController {
 - **You are in control**
 
 ## What This Framework Is NOT
+
 - Not a Laravel, Symfony, CodeIgniter, or Slim clone
 - Not a full-stack SPA framework
 - Not for those who want everything done for them
 
-## What’s Included
+## What's Included
+
 - Minimal MVC structure
 - Simple routing
 - Twig templating (optional to swap for PHP)
 - Essential CLI tools (scaffolding)
 - Custom error handling
-- Basic security helpers
+- **Centralized configuration system** with `config()` helper
+- **Enhanced security** with configurable XSS and CSP protection
 - **HTMX and PicoCSS pre-installed**
 
-## What’s NOT Included
+## What's NOT Included
+
 - No asset pipeline or `node_modules`
 - No heavy ORM (use Models for direct DB access)
 - No built-in authentication (add your own as needed)
 - No complex middleware (keep it simple)
 
+## Configuration System
+
+SproutPHP now includes a powerful configuration system:
+
+```php
+// Access configuration values
+$appName = config('app.name');
+$dbHost = config('database.connections.mysql.host');
+$xssEnabled = config('security.xss.enabled');
+```
+
+### Configuration Files
+
+- `config/app.php` - Application settings and global middleware
+- `config/database.php` - Database connections
+- `config/security.php` - Security settings (CSRF, XSS, CSP)
+- `config/view.php` - View engine settings
+- `config/cache.php` - Cache configuration
+- `config/mail.php` - Mail configuration
+
+See `CONFIGURATION.md` for complete documentation.
+
 ## Using HTMX and PicoCSS
+
 You do **not** need to install or include HTMX or PicoCSS yourself—they are already downloaded and loaded in your base template:
 
 ```html
-<link rel="stylesheet" href="{{ assets('css/sprout.min.css') }}">
+<link rel="stylesheet" href="{{ assets('css/sprout.min.css') }}" />
 <script src="{{ assets('js/sprout.min.js') }}"></script>
 ```
 
 ## CLI Reference
+
 Run `php sprout` for all available commands, including:
+
 - `grow` — Start local dev server
 - `make:controller`, `make:model`, `make:view`, `make:route`, `make:component`, `make:migration`, `migrate`, etc.
 - `env` — Set environment
@@ -111,6 +143,7 @@ Run `php sprout` for all available commands, including:
 - `info` — Show framework info
 
 ## 🌿 Contributing & Future Growth
+
 SproutPHP is a living, growing project—just like its name! Contributions, ideas, and feedback are welcome. Here’s how you can help this sprout grow:
 
 1. **Fork the repo and clone it locally**
@@ -121,9 +154,11 @@ SproutPHP is a living, growing project—just like its name! Contributions, idea
 
 **Star this repo** to show your support and follow future updates!
 
-**Sponsor development:** [buymeacoffee.com/yanikkumar](https://buymeacoffee.com/yanikkumar)
+**Sponsor development:** [![Sponsor](https://img.shields.io/badge/Sponsor%20Creator-%E2%9D%A4%EF%B8%8F-pink?logo=github-sponsors&style=flat-square)](https://github.com/sponsors/yanikkumar)
+
 
 > SproutPHP will continue to grow with new features, improvements, and community input. Stay tuned for updates, and help shape the future of this framework!
 
 ## License
-MIT 
+
+MIT
