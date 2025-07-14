@@ -11,7 +11,6 @@ return [
     'key' => env('APP_KEY', 'your-secret-key-here'),
     
     // Framework settings
-    'version' => '1.0.0',
     'framework' => 'SproutPHP',
     'repo' => env('SPROUT_REPO', 'SproutPHP/framework'),
     'user_agent' => env('SPROUT_USER_AGENT', 'sproutphp-app'),

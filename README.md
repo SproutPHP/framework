@@ -132,6 +132,45 @@ You do **not** need to install or include HTMX or PicoCSS yourself—they are al
 <script src="{{ assets('js/sprout.min.js') }}"></script>
 ```
 
+## Twig Helper Functions
+
+SproutPHP uses a **hybrid system** for making PHP helper functions available in your Twig templates:
+
+- **Automatic Registration:** All user-defined functions in `core/Support/helpers.php` are automatically registered as Twig helpers. Just add your function to `helpers.php` and it will be available in your Twig views.
+- **Explicit Registration (Optional):** You can also explicitly list additional helpers in the `twig_helpers` array in `config/view.php`. This is useful if you want to expose helpers from other files or override the default set.
+- **Both lists are merged and deduplicated.**
+
+### Usage
+
+1. **Add a helper to `helpers.php`:**
+   ```php
+   // core/Support/helpers.php
+   if (!function_exists('my_custom_helper')) {
+       function my_custom_helper($arg) {
+           return strtoupper($arg);
+       }
+   }
+   ```
+   Now you can use it in Twig:
+   ```twig
+   {{ my_custom_helper('hello') }}
+   ```
+
+2. **(Optional) Add a helper to config:**
+   ```php
+   // config/view.php
+   'twig_helpers' => [
+       'my_other_helper',
+   ],
+   ```
+
+### How it works
+- All helpers in `helpers.php` are auto-registered.
+- Any helpers listed in `twig_helpers` are also registered (even if not in `helpers.php`).
+- If a helper exists in both, it is only registered once.
+
+**This means most of the time, you just add your helper to `helpers.php` and it works in Twig!**
+
 ## CLI Reference
 
 Run `php sprout` for all available commands, including:

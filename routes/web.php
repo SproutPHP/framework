@@ -4,7 +4,8 @@ use App\Middlewares\RouteTestMiddleware;
 use Core\Routing\Route;
 
 Route::get('/', function () {
-    return view('home', ['title' => 'SproutPHP Home']);
+    $getLatestRelease = getLatestRelease();
+    return view('home', ['title' => 'SproutPHP Home', 'getLatestRelease' => $getLatestRelease]);
 });
 
 Route::get('/home', 'HomeController@index');
@@ -30,10 +31,10 @@ Route::get('/security-test', function () {
     echo "<p><strong>CSP Report Only:</strong> " . (config('security.csp.report_only') ? 'Yes' : 'No') . "</p>";
     echo "<p><strong>Environment:</strong> " . config('app.env') . "</p>";
     echo "<p><strong>Debug Mode:</strong> " . (config('app.debug') ? 'Enabled' : 'Disabled') . "</p>";
-    
+
     // Test inline styles (should work in local, blocked in production)
     echo "<p style='color: red;'>This text should be red in local environment</p>";
-    
+
     // Test external image (should work in local, blocked in production)
     echo "<img src='https://img.shields.io/github/stars/sproutphp/framework?style=social' alt='GitHub Stars'>";
 });

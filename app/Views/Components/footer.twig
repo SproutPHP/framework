@@ -1,0 +1,17 @@
+{# SproutPHP Component: footer.twig #}
+<footer class="footer" style="margin-top:2rem; padding:1.5rem 0; border-top:1px solid #eee; text-align:center; font-size:0.95rem; color:#888;">
+    <div style="margin-bottom:0.5rem;">
+        {% if config('app.env') == 'local' or config('app.debug') %}
+            <a href="/security-test">Security Test</a> |
+            <a href="/debug-config">Debug Config</a> |
+            <a href="/config-test">Config Test</a> |
+            <a href="/envtest">Env Test</a>
+        {% endif %}
+    </div>
+    <div>
+        SproutPHP {{ getLatestRelease() }} &mdash; <span style="text-transform:capitalize">{{ config('app.env', 'local') }}</span> environment
+    </div>
+    <div style="margin-top:0.5rem;">
+        &copy; {{ "now"|date("Y") }} <a href="https://github.com/yanikkumar" target="_blank">Yanik Kumar</a> &mdash; <a href="https://github.com/SproutPHP/framework" target="_blank">GitHub</a>
+    </div>
+</footer> 

@@ -35,27 +35,27 @@ class View
             'strict_variables' => $twigConfig['strict_variables'] ?? false,
         ]);
 
-        // Register global helper functions like assets() debug() if it exists as Twig doesn't have direct access to PHP global functions by default
-        self::registerAllHelpers();
+        // Register helpers for Twig: auto-register all from helpers.php, merge with config('view.twig_helpers') if set.
+        self::registerExplicitHelpers();
     }
     
     /**
-     * Get All PHP Helpers that are currently defined
+     * Register helpers for Twig: auto-register all from helpers.php, merge with config('view.twig_helpers') if set.
      */
-    private static function discoverHelpers() {
-        $functions = get_defined_functions();
-        return $functions['user'];
-    }
+    private static function registerExplicitHelpers() {
+        // 1. Get all user-defined functions (auto-discover from helpers.php and any loaded helpers)
+        $userFunctions = get_defined_functions()['user'];
 
-    /**
-     * Register all helpers found in $helperFunctions
-     */
-    private static function registerAllHelpers(){
-        $helperFunctions = self::discoverHelpers();
+        // 2. Get explicit list from config, if any
+        $configHelpers = config('view.twig_helpers', []);
 
-        foreach($helperFunctions as $functionName) {
-            if(function_exists($functionName)) {
-                self::$twig->addFunction(new TwigFunction($functionName, $functionName));
+        // 3. Merge and deduplicate
+        $allHelpers = array_unique(array_merge($userFunctions, $configHelpers));
+
+        // 4. Register each helper if it exists
+        foreach ($allHelpers as $helper) {
+            if (function_exists($helper)) {
+                self::$twig->addFunction(new \Twig\TwigFunction($helper, $helper));
             }
         }
     }
