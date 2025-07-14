@@ -24,6 +24,7 @@ return [
     
     // Session settings
     'session' => [
+        'name' => env('SESSION_NAME', 'sprout_session'),
         'driver' => env('SESSION_DRIVER', 'file'),
         'lifetime' => env('SESSION_LIFETIME', 120),
         'path' => env('SESSION_PATH', '/storage/sessions'),

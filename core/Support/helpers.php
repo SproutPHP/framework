@@ -1,5 +1,6 @@
 <?php
 
+use Core\Support\Validator;
 use Core\View\View;
 
 /**
@@ -172,9 +173,6 @@ if (!function_exists('is_ajax_request')) {
 if (!function_exists('csrf_field')) {
     function csrf_field()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
         if (empty($_SESSION['_csrf_token'])) {
             $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
         }
@@ -243,4 +241,12 @@ if (!function_exists('render_fragment_or_full')) {
             echo view($layoutView, $data, true); // render layout as string, then echo
         }
     }
+}
+
+/**
+ * Validator Helper
+ */
+function validate($data, $rules)
+{
+    return new Validator($data, $rules);
 }

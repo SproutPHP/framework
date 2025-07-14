@@ -83,3 +83,7 @@ Route::get('/test500', function () {
 Route::get('/route-middleware-test', function () {
     return 'Route-specific middleware test response.';
 })->middleware('route-test');
+
+// 🌱 Resource routes for Validation-testController
+Route::get('/validation-test', 'ValidationTestController@index');
+Route::post('/validation-test', 'ValidationTestController@handleForm');

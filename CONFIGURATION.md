@@ -69,6 +69,7 @@ CACHE_PATH=/storage/cache
 
 ### Session Configuration
 ```env
+SESSION_NAME=sprout_session
 SESSION_DRIVER=file
 SESSION_LIFETIME=120
 SESSION_PATH=/storage/sessions

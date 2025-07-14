@@ -1,0 +1,6 @@
+<div class="success">
+    <h2>Form Submitted Successfully!</h2>
+    <p>Name: {{ name|e }}</p>
+    <p>Email: {{ email|e }}</p>
+    <button hx-get="/validation-test" hx-target="#main-content" hx-push-url="true">Submit Another</button>
+</div>
