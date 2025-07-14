@@ -83,6 +83,71 @@ $xssEnabled = config('security.xss.enabled');
 
 See `CONFIGURATION.md` for complete documentation.
 
+## Validation System (NEW in v0.1.6-alpha.1)
+
+SproutPHP now includes a minimal, extensible validation system for validating user input in controllers and forms.
+
+### Overview
+- Validate associative arrays (e.g., $_POST, custom data)
+- Supports common rules: required, email, min, max, numeric, string, in, etc.
+- Collects and returns error messages
+- Easily display errors in Twig views
+- Extensible: add your own rules as needed
+
+### Example Usage in a Controller
+```php
+use Core\Support\Validator;
+
+public function handleForm()
+{
+    $data = $_POST;
+    $validator = new Validator($data, [
+        'email' => 'required|email',
+        'name' => 'required|min:3',
+    ]);
+
+    if ($validator->fails()) {
+        // Pass errors and old input to the view
+        return view('your-form-view', [
+            'errors' => $validator->errors(),
+            'old' => $data,
+        ]);
+    }
+
+    // Proceed with valid data
+}
+```
+
+### Available Rules
+- `required` — Field must not be empty
+- `email` — Must be a valid email address
+- `min:N` — Minimum length N
+- `max:N` — Maximum length N
+- `numeric` — Must be a number
+- `string` — Must be a string
+- `in:val1,val2,...` — Value must be one of the listed options
+
+You can add more rules by extending the Validator class.
+
+### Displaying Errors in Twig
+```twig
+<form method="POST">
+    <input type="text" name="name" value="{{ old.name|e }}">
+    {% if errors.name %}
+        <div class="error">{{ errors.name }}</div>
+    {% endif %}
+    <input type="email" name="email" value="{{ old.email|e }}">
+    {% if errors.email %}
+        <div class="error">{{ errors.email }}</div>
+    {% endif %}
+    <button type="submit">Submit</button>
+</form>
+```
+
+### Notes
+- Use the `validate()` helper for a shortcut: `validate($data, $rules)`
+- See the Validator class in `core/Support/Validator.php` for more details and to add custom rules.
+
 ## Using HTMX and PicoCSS
 
 You do **not** need to install or include HTMX or PicoCSS yourself—they are already downloaded and loaded in your base template:
