@@ -1,0 +1,25 @@
+<form 
+    hx-post="/validation-test" 
+    hx-target="#form-container" 
+    hx-swap="innerHTML"
+    method="POST"
+    autocomplete="off"
+>
+    {# CSRF TOKEN #}
+    {{ csrf_field()|raw }}
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" value="{{ old.name|e }}">
+        {% if errors.name %}
+            <div class="error" style="color: red;">{{ errors.name }}</div>
+        {% endif %}
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" value="{{ old.email|e }}">
+        {% if errors.email %}
+            <div class="error" style="color: red;">{{ errors.email }}</div>
+        {% endif %}
+    </div>
+    <button type="submit">Submit</button>
+</form>

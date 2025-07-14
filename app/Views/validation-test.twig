@@ -1,0 +1,11 @@
+{% extends "layouts/base.twig" %}
+{% block title %}validation-test{% endblock %}
+
+{% block content %}
+    <h1>validation-test</h1>
+    <p>This is the <strong>validation-test</strong> page.</p>
+        <h1>Validation Test Form</h1>
+        <div id="form-container">
+            {% include "partials/validation-form.twig" %}
+        </div>
+{% endblock %}
