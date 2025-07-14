@@ -79,7 +79,7 @@ class Router
             }
         }
 
-        $kernel = new MiddlewareKernel($routeMiddleware);
+        $kernel = new MiddlewareKernel($resolvedMiddleware);
 
         $coreHandler = function ($request) use ($route) {
             $callback = $route->action;
