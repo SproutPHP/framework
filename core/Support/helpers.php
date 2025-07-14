@@ -244,3 +244,11 @@ if (!function_exists('render_fragment_or_full')) {
         }
     }
 }
+
+/**
+ * Validator Helper
+ */
+function validate($data, $rules)
+{
+    return new \Sprout\Core\Support\Validator($data, $rules);
+}
