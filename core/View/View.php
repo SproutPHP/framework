@@ -17,8 +17,19 @@ class View
         $loader = new FilesystemLoader($viewsPath);
         
         $twigConfig = config('view.twig', []);
+        
+        // Configure cache properly
+        $cachePath = false; // Default to no cache
+        if ($twigConfig['cache'] && $twigConfig['cache'] !== false) {
+            // If cache is enabled, use a proper cache directory
+            $cachePath = __DIR__ . '/../../storage/twig-cache';
+            if (!is_dir($cachePath)) {
+                mkdir($cachePath, 0777, true);
+            }
+        }
+        
         self::$twig = new Environment($loader, [
-            'cache' => $twigConfig['cache'] ?? false,
+            'cache' => $cachePath,
             'debug' => $twigConfig['debug'] ?? true,
             'auto_reload' => $twigConfig['auto_reload'] ?? true,
             'strict_variables' => $twigConfig['strict_variables'] ?? false,
