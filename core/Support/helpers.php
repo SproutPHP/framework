@@ -6,9 +6,13 @@ use Core\View\View;
  * view helper accepting template-name and data
  */
 if (!function_exists('view')) {
-    function view($template, $data = [])
+    function view($template, $data = [], $return = false)
     {
-        return View::render($template, $data);
+        $output = View::render($template, $data, true); // always get as string
+        if ($return) {
+            return $output;
+        }
+        echo $output;
     }
 }
 
@@ -113,10 +117,15 @@ if (!function_exists('getLatestRelease')) {
     {
         $repo = config('app.repo', 'SproutPHP/framework');
         $userAgent = config('app.user_agent', 'sproutphp-app');
+        $token = env('GITHUB_TOKEN');
         $url = "https://api.github.com/repos/$repo/releases";
+        $headers = "User-Agent: $userAgent\r\n";
+        if ($token) {
+            $headers .= "Authorization: token $token\r\n";
+        }
         $opts = [
             "http" => [
-                "header" => "User-Agent: $userAgent\r\n"
+                "header" => $headers
             ]
         ];
         $context = stream_context_create($opts);
@@ -196,5 +205,33 @@ if (!function_exists('config')) {
         }
         
         return $value;
+    }
+}
+
+if (!function_exists('is_htmx_request')) {
+    /**
+     * Returns true if the request is an HTMX request.
+     */
+    function is_htmx_request() {
+        return isset($_SERVER['HTTP_HX_REQUEST']) && $_SERVER['HTTP_HX_REQUEST'] === 'true';
+    }
+}
+
+if (!function_exists('render_fragment_or_full')) {
+    /**
+     * Renders a fragment for HTMX/AJAX, or wraps it in a layout for normal requests.
+     * @param string $fragmentView The Twig view for the fragment (e.g., 'partials/security-test')
+     * @param array $data Data to pass to the view
+     * @param string $layoutView The layout view (default: 'base')
+     * @param string $blockName The block name in the layout to inject the fragment (default: 'content')
+     */
+    function render_fragment_or_full($fragmentView, $data = [], $layoutView = 'layouts/base', $blockName = 'content') {
+        $isPartial = is_htmx_request() || is_ajax_request();
+        if ($isPartial) {
+            echo view($fragmentView, $data, true);
+        } else {
+            $data[$blockName] = view($fragmentView, $data, true); // get fragment as string
+            echo view($layoutView, $data, true); // render layout as string, then echo
+        }
     }
 }

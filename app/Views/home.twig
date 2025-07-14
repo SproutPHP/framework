@@ -1,20 +1,34 @@
 {% extends "layouts/base.twig" %}
 
-{% block title %}Home — SproutPHP{% endblock %}
+{% block title %}Home — SproutPHP
+{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <p>Welcome to <strong>SproutPHP</strong>, the seed-to-plant minimal PHP framework 🌱</p>
-  <p>HTMX-ready, JS-optional, and developer-happy.</p>
-
-  <button 
-    hx-get="/home" 
-    hx-target="#result" 
-    hx-swap="innerHTML"
-    class="contrast"
-  >
-    Click to Sprout
-  </button>
-
-  <div id="result" style="margin-top: 1rem;"></div>
+	<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;margin-top:2rem;">
+		<img src="{{ assets('img/logo.png') }}" alt="SproutPHP Logo" width="64" height="64" style="margin-bottom:1rem;"/>
+		<h1 style="font-size:2.2rem;margin-bottom:0.5rem;">{{ config('app.name', 'SproutPHP') }}</h1>
+		<div style="color:#888;font-size:1.1rem;margin-bottom:1.5rem;">
+			<span>{{ getLatestRelease }}</span>
+			&mdash;
+			<span style="text-transform:capitalize">{{ config('app.env', 'local') }}</span>
+			environment
+		</div>
+		<p style="font-size:1.15rem;max-width:500px;margin-bottom:2rem;">Welcome to
+			<strong>SproutPHP</strong>, the seed-to-plant minimal PHP framework 🌱<br>HTMX-ready, JS-optional, and developer-happy.</p>
+		<div style="display:flex;gap:1.5rem;margin-bottom:2rem;flex-wrap:wrap;justify-content:center;">
+			<a href="https://sproutphp.dev/docs" class="contrast" style="padding:0.7rem 1.5rem;border-radius:6px;text-decoration:none;">📖 Documentation</a>
+			<a href="https://github.com/SproutPHP/framework" class="contrast" style="padding:0.7rem 1.5rem;border-radius:6px;text-decoration:none;">🌱 GitHub</a>
+			<a href="https://github.com/sponsors/yanikkumar" class="contrast" style="padding:0.7rem 1.5rem;border-radius:6px;text-decoration:none;">❤️ Sponsor</a>
+		</div>
+		<button hx-get="/home" hx-target="#result" hx-swap="innerHTML" class="contrast" style="margin-bottom:1.5rem;">
+			Click to Sprout
+		</button>
+		<div id="result" style="margin-top: 1rem;"></div>
+		<!-- main_content block is used for fragment injection by render_fragment_or_full helper -->
+		<div id="main-content">
+			{% if main_content is defined %}
+				{{ main_content|raw }}
+			{% endif %}
+		</div>
+	</div>
 {% endblock %}

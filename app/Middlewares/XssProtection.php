@@ -9,25 +9,21 @@ class XssProtection implements MiddlewareInterface
 {
     public function handle(Request $request, callable $next)
     {
-        $response = $next($request);
-
-        // Get security configuration
+        // Set headers BEFORE calling $next
         $xssEnabled = config('security.xss.enabled', true);
         $xssMode = config('security.xss.mode', 'block');
-        
         if ($xssEnabled) {
             header("X-XSS-Protection: 1; mode={$xssMode}");
         }
-        
         header("X-Content-Type-Options: nosniff");
-        
-        // Set Content Security Policy based on environment
+
         $cspEnabled = config('security.csp.enabled', true);
         if ($cspEnabled) {
             $cspPolicy = $this->getCspPolicy();
             header("Content-Security-Policy: {$cspPolicy}");
         }
-        
+
+        $response = $next($request);
         return $response;
     }
     

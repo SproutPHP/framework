@@ -142,7 +142,8 @@ switch ($command) {
         break;
 
     case 'bloom':
-        echo "🌸 Preparing production build (coming soon)\n";
+        echo "\n🌸 SproutPHP Build: Preparing production build...\n";
+        Build::run();
         break;
 
     case 'version':
@@ -205,8 +206,8 @@ switch ($command) {
 
         break;
 
-    case 'build':
-        Build::run();
+    case 'install:pico':
+        \Core\Console\PostInstall::run();
         break;
 
     case 'help':
@@ -225,9 +226,9 @@ switch ($command) {
         echo "  php sprout logs             Shows recent errors from logs\n";
         echo "  php sprout seed             Generate files (coming soon)\n";
         echo "  php sprout prune            Remove unwanted files (coming soon)\n";
-        echo "  php sprout build            Build for production (minifies, strips dev code, precompiles)\n";
-        echo "  php sprout bloom            Build for production (coming soon)\n";
+        echo "  php sprout bloom            Build for production (minifies, strips dev code, precompiles)\n";
         echo "  php sprout version          Show framework version\n";
         echo "  php sprout info             Show framework information\n";
+        echo "  php sprout install:pico     Update PicoCSS (choose build/theme)\n";
         break;
 }
