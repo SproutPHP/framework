@@ -176,6 +176,27 @@ Route::get('/my-fragment', function () {
 
 **Tip:** For most routes, use the generic helper. Use the manual method only if you need special handling.
 
+## Preventing HTMX from Handling Certain Links
+
+Sometimes you want a link to always trigger a full page reload (for example, your home link to "/"), rather than being handled by HTMX as a fragment swap. To do this, use one of the following approaches:
+
+- Add `hx-boost="false"` to the `<a>` tag:
+  ```html
+  <a href="/" hx-boost="false">Home</a>
+  ```
+- Or, add `target="_self"`:
+  ```html
+  <a href="/" target="_self">Home</a>
+  ```
+- Or, add `rel="external"`:
+  ```html
+  <a href="/" rel="external">Home</a>
+  ```
+
+**Best Practice:**
+- Use these attributes for any link that should always reload the full page, such as your site home or links to external sites.
+- This prevents issues where the page loses its CSS/JS context due to HTMX fragment swaps.
+
 ## CLI Reference
 
 Run `php sprout` for all available commands, including:
