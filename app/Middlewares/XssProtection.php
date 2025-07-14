@@ -33,14 +33,14 @@ class XssProtection implements MiddlewareInterface
         $debug = config('app.debug', false);
         
         // Base CSP policy
-        $basePolicy = "default-src 'self'; script-src 'self'; object-src 'none';";
+        $basePolicy = "default-src 'self'; object-src 'none';";
         
         if ($env === 'local' || $debug) {
             // Development: relaxed policy
-            return $basePolicy . " style-src 'self' 'unsafe-inline'; img-src 'self' https://img.shields.io;";
+            return $basePolicy . " script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://img.shields.io;";
         } else {
             // Production: strict policy
-            return $basePolicy . " style-src 'self'; img-src 'self';";
+            return $basePolicy . " script-src 'self'; style-src 'self'; img-src 'self';";
         }
     }
 }

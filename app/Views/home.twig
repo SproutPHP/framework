@@ -20,8 +20,16 @@
 			<a href="https://github.com/SproutPHP/framework" class="contrast" style="padding:0.7rem 1.5rem;border-radius:6px;text-decoration:none;">🌱 GitHub</a>
 			<a href="https://github.com/sponsors/yanikkumar" class="contrast" style="padding:0.7rem 1.5rem;border-radius:6px;text-decoration:none;">❤️ Sponsor</a>
 		</div>
-		<button hx-get="/home" hx-target="#result" hx-swap="innerHTML" class="contrast" style="margin-bottom:1.5rem;">
-			Click to Sprout
+		<button 
+		  id="sprout-btn" 
+		  class="contrast" 
+		  hx-get="/home" 
+		  hx-target="#result" 
+		  hx-swap="innerHTML"
+		  style="position:relative; overflow:hidden; margin-bottom:1.5rem;"
+		>
+		  <span id="sprout-seed" style="display:inline-block; transition:transform 0.5s;">🫘</span>
+		  <span id="sprout-label" style="margin-left:0.5em;">Click to Sprout</span>
 		</button>
 		<div id="result" style="margin-top: 1rem;"></div>
 		<!-- main_content block is used for fragment injection by render_fragment_or_full helper -->
@@ -31,4 +39,37 @@
 			{% endif %}
 		</div>
 	</div>
+	<style>
+	#sprout-btn.sprout-animating #sprout-seed {
+	  animation: sprout-wiggle 0.7s infinite alternate;
+	}
+	@keyframes sprout-wiggle {
+	  0% { transform: scale(1) rotate(-10deg);}
+	  100% { transform: scale(1.3) rotate(10deg);}
+	}
+	#sprout-btn.sprout-grown #sprout-seed {
+	  animation: sprout-grow 0.7s forwards;
+	}
+	@keyframes sprout-grow {
+	  0% { transform: scale(1); }
+	  80% { transform: scale(1.7) rotate(-10deg);}
+	  100% { transform: scale(1.3) rotate(0deg);}
+	}
+	</style>
+	<script>
+	const btn = document.getElementById('sprout-btn');
+	const seed = document.getElementById('sprout-seed');
+	btn.addEventListener('click', function() {
+	  btn.classList.add('sprout-animating');
+	  seed.textContent = '🫘';
+	});
+	// Listen for any HTMX request completion
+	document.body.addEventListener('htmx:afterRequest', function(evt) {
+	  if (btn && seed && btn.classList.contains('sprout-animating')) {
+	    btn.classList.remove('sprout-animating');
+	    btn.classList.add('sprout-grown');
+	    seed.textContent = '🌱';
+	  }
+	});
+	</script>
 {% endblock %}
