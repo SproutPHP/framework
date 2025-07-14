@@ -62,7 +62,7 @@ class Debugbar
 
         echo "<strong>🌿 SproutPHP DebugBar</strong> ";
         echo " | Method: <span style='color:#6cf'>" . $_SERVER['REQUEST_METHOD'] . "</span>";
-        echo " | URI: <span style='color:#6cf'>" . $_SERVER['REQUEST_URI'] . "</span>";
+        echo " | URI: <span id='sproutphp-debugbar-uri' style='color:#6cf'>" . htmlspecialchars($_SERVER['REQUEST_URI']) . "</span>";
         echo " | Queries: <span style='color:#f90'>" . count($queries) . "</span>";
         echo " | Query Time: {$totalQueryTime}ms";
         echo " | Page Time: {$executionTime}ms";
@@ -86,5 +86,16 @@ class Debugbar
         }
 
         echo "</div>";
+        // Inline script to update URI after HTMX navigation
+        echo "<script>
+        function updateSproutDebugbarUri() {
+            var el = document.getElementById('sproutphp-debugbar-uri');
+            if (el) {
+                el.textContent = window.location.pathname + window.location.search;
+            }
+        }
+        updateSproutDebugbarUri();
+        document.body.addEventListener('htmx:afterSettle', updateSproutDebugbarUri);
+        </script>";
     }
 }

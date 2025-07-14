@@ -2,10 +2,10 @@
 <footer class="footer" style="margin-top:2rem; padding:1.5rem 0; border-top:1px solid #eee; text-align:center; font-size:0.95rem; color:#888;">
     <div style="margin-bottom:0.5rem;">
         {% if config('app.env') == 'local' or config('app.debug') %}
-            <a href="/security-test">Security Test</a> |
-            <a href="/debug-config">Debug Config</a> |
-            <a href="/config-test">Config Test</a> |
-            <a href="/envtest">Env Test</a>
+            <a href="/security-test" hx-get="/security-test" hx-target="#main-content" hx-push-url="true">Security Test</a> |
+            <a href="/debug-config" hx-get="/debug-config" hx-target="#main-content" hx-push-url="true">Debug Config</a> |
+            <a href="/config-test" hx-get="/config-test" hx-target="#main-content" hx-push-url="true">Config Test</a> |
+            <a href="/envtest" hx-get="/envtest" hx-target="#main-content" hx-push-url="true">Env Test</a>
         {% endif %}
     </div>
     <div>

@@ -12,10 +12,12 @@
 		<link rel="stylesheet" href="{{ assets('css/sprout.min.css') }}">
 		<script src="{{ assets('js/sprout.min.js') }}"></script>
 	</head>
-	<body>
-		<main class="container">
+	<body style="min-height:100vh;display:flex;flex-direction:column;">
+		<main class="container" style="flex:1 0 auto;">
 			{% include 'components/navbar.twig' %}
-			{% block content %}{% endblock %}
+			<div id="main-content">
+				{% block content %}{% endblock %}
+			</div>
 		</main>
 
 		{% if config('app.env', 'local') == 'local' %}

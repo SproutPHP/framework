@@ -113,10 +113,15 @@ if (!function_exists('getLatestRelease')) {
     {
         $repo = config('app.repo', 'SproutPHP/framework');
         $userAgent = config('app.user_agent', 'sproutphp-app');
+        $token = env('GITHUB_TOKEN');
         $url = "https://api.github.com/repos/$repo/releases";
+        $headers = "User-Agent: $userAgent\r\n";
+        if ($token) {
+            $headers .= "Authorization: token $token\r\n";
+        }
         $opts = [
             "http" => [
-                "header" => "User-Agent: $userAgent\r\n"
+                "header" => $headers
             ]
         ];
         $context = stream_context_create($opts);

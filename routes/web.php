@@ -34,9 +34,6 @@ Route::get('/security-test', function () {
 
     // Test inline styles (should work in local, blocked in production)
     echo "<p style='color: red;'>This text should be red in local environment</p>";
-
-    // Test external image (should work in local, blocked in production)
-    echo "<img src='https://img.shields.io/github/stars/sproutphp/framework?style=social' alt='GitHub Stars'>";
 });
 
 Route::get('/debug-config', function () {
