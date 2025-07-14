@@ -154,7 +154,10 @@ SproutPHP is a living, growing project—just like its name! Contributions, idea
 
 **Star this repo** to show your support and follow future updates!
 
-**Sponsor development:** [![Sponsor](https://img.shields.io/badge/Sponsor%20Creator-%E2%9D%A4%EF%B8%8F-pink?logo=github-sponsors&style=flat-square)](https://github.com/sponsors/yanikkumar)
+**Sponsor development:** [![Sponsor Creator](https://img.shields.io/badge/Sponsor-%E2%9D%A4%EF%B8%8F-pink?logo=githubsponsors&style=flat-square)](https://github.com/sponsors/yanikkumar) • [Buy Me a Tea 🍵](https://buymeacoffee.com/yanikkumar)
+
+
+
 
 
 > SproutPHP will continue to grow with new features, improvements, and community input. Stay tuned for updates, and help shape the future of this framework!
