@@ -217,3 +217,44 @@ SproutPHP is a living, growing project—just like its name! Contributions, idea
 4. **Submit a pull request**
 5. **Discuss and improve** with the community
 
+## PicoCSS Installer (Post-Install Script)
+
+SproutPHP includes a post-install script that lets you choose your preferred PicoCSS build right after running `composer install`.
+
+### How it Works
+- After installing dependencies, you'll be prompted to select a PicoCSS build:
+  0. Default Sprout Layout (Minimal PicoCSS) — just press Enter or choose 0 for the default
+  1. Minimal (Standard)
+  2. Classless
+  3. Conditional
+  4. Fluid Classless
+  5. Color Theme (choose a color)
+  6. Classless + Color Theme
+  7. Conditional + Color Theme
+  8. Fluid + Classless + Conditional + Color Theme
+  9. Color Palette Only
+- If you choose a color theme, you'll be prompted for the color (amber, blue, cyan, fuchsia, green, grey, indigo, jade, lime, orange, pink, pumpkin, purple, red, sand, slate, violet, yellow, zinc).
+- You'll also be asked if you want the minified version (recommended for production).
+- The script will download the latest PicoCSS file from the CDN and save it as `public/assets/css/sprout.min.css`.
+
+### Use Cases
+| Use Case | Choose This Option |
+|----------|-------------------|
+| Default Sprout layout, minimal PicoCSS | 0 (or press Enter) |
+| Simple blog, no layout classes | Classless |
+| Full control, grid, utilities | Minimal (Standard) |
+| Themed look + classless | Classless + Color Theme |
+| Toggle light/dark with JS | Conditional or Conditional + Color Theme |
+| Full-width layout, no classes | Fluid Classless |
+| Define your own classes | Color Palette Only |
+
+### Changing PicoCSS Later
+- You can re-run the post-install script at any time:
+  ```bash
+  php core/Console/PostInstall.php
+  ```
+- Or, manually download your preferred PicoCSS file from [jsdelivr PicoCSS CDN](https://cdn.jsdelivr.net/npm/@picocss/pico@latest/css/) and place it in `public/assets/css/sprout.min.css`.
+
+### Advanced
+- All PicoCSS builds and color themes are available. See the [PicoCSS documentation](https://picocss.com/docs/) for more details on each build type and theme.
+
