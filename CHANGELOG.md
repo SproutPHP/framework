@@ -7,7 +7,7 @@ Earlier releases (`v0.1.0-alpha.1` to `v0.1.7-alpha.1`) were experimental and do
 
 ---
 
-## [v0.1.7-alpha.2] - YYYY-MM-DD
+## [v0.1.7-alpha.2] - 2025-07-15
 
 ### Changed
 
