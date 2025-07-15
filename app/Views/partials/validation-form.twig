@@ -13,16 +13,28 @@
         <label for="name">Name:</label>
         <input type="text" name="name" id="name" value="{{ old.name|e }}">
         {% if errors.name %}
-            <div class="error" style="color: red;">{{ errors.name }}</div>
+            <div class="error" for="name" style="color: red;">{{ errors.name }}</div>
         {% endif %}
     </div>
     <div>
         <label for="email">Email:</label>
         <input type="email" name="email" id="email" value="{{ old.email|e }}">
         {% if errors.email %}
-            <div class="error" style="color: red;">{{ errors.email }}</div>
+            <div class="error" for="email" style="color: red;">{{ errors.email }}</div>
         {% endif %}
     </div>
     <button type="submit">Submit
     </button>
 </form>
+<script>
+document.addEventListener('focusin', function(e) {
+  if (e.target.matches('input[name="name"]')) {
+    const error = e.target.closest('form').querySelector('.error[for="name"]');
+    if (error) error.remove();
+  }
+  if (e.target.matches('input[name="email"]')) {
+    const error = e.target.closest('form').querySelector('.error[for="email"]');
+    if (error) error.remove();
+  }
+});
+</script>
