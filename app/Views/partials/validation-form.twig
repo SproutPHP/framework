@@ -1,7 +1,9 @@
+{% include "components/spinner.twig" %}
 <form 
     hx-post="/validation-test" 
     hx-target="#form-container" 
     hx-swap="innerHTML"
+    hx-indicator="#spinner"
     method="POST"
     autocomplete="off"
 >
@@ -21,5 +23,6 @@
             <div class="error" style="color: red;">{{ errors.email }}</div>
         {% endif %}
     </div>
-    <button type="submit">Submit</button>
+    <button type="submit">Submit
+    </button>
 </form>
