@@ -20,7 +20,7 @@ class Validator
         return !empty($this->errors);
     }
 
-    public function  errors()
+    public function errors()
     {
         return $this->errors;
     }
@@ -68,7 +68,7 @@ class Validator
      */
     protected function validateMin($field, $param)
     {
-        if (strlen($this->data[$field] ?? '') < (int)$param) {
+        if (strlen($this->data[$field] ?? '') < (int) $param) {
             $this->errors[$field] = "The $field must be at least $param characters.";
         }
     }
@@ -78,7 +78,7 @@ class Validator
      */
     protected function validateMax($field, $param)
     {
-        if (strlen($this->data[$field] ?? '') > (int)$param) {
+        if (strlen($this->data[$field] ?? '') > (int) $param) {
             $this->errors[$field] = "The $field must be at atmost $param characters.";
         }
     }
@@ -273,7 +273,7 @@ class Validator
      */
     protected function validateDigits($field, $param)
     {
-        if (!preg_match('/^\d{' . (int)$param . '}$/', $this->data[$field] ?? '')) {
+        if (!preg_match('/^\d{' . (int) $param . '}$/', $this->data[$field] ?? '')) {
             $this->errors[$field] = "The $field must be exactly $param digits.";
         }
     }
@@ -285,7 +285,7 @@ class Validator
     {
         [$min, $max] = explode(',', $param);
         $length = strlen($this->data[$field] ?? '');
-        if (!preg_match('/^\d+$/', $this->data[$field] ?? '') || $length < (int)$min || $length > (int)$max) {
+        if (!preg_match('/^\d+$/', $this->data[$field] ?? '') || $length < (int) $min || $length > (int) $max) {
             $this->errors[$field] = "The $field must be between $min and $max digits.";
         }
     }
@@ -303,7 +303,7 @@ class Validator
         } else {
             $size = strlen($value);
         }
-        if ($size != (int)$param) {
+        if ($size != (int) $param) {
             $this->errors[$field] = "The $field must be exactly $param in size.";
         }
     }
@@ -353,6 +353,43 @@ class Validator
     {
         if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $this->data[$field] ?? '')) {
             $this->errors[$field] = "The $field must be a valid UUID.";
+        }
+    }
+
+    /**
+     * MIMES: File extension matches allowed types
+     */
+    protected function validateMimes($field, $param)
+    {
+        if (!isset($this->data[$field]) && !isset($_FILES[$field])) {
+            $this->errors[$field] = "The $field field is required.";
+            return;
+        }
+        $file = $_FILES[$field] ?? null;
+        if (!$file || !is_uploaded_file($file['tmp_name'])) {
+            $this->errors[$field] = "The $field must be a file.";
+            return;
+        }
+        $allowed = array_map('strtolower', explode(',', $param));
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, $allowed)) {
+            $this->errors[$field] = "The $field must be a file of type: " . implode(', ', $allowed) . ".";
+        }
+    }
+
+    /**
+     * Image: File is a valid image (by MIME type)
+     */
+    protected function validateImage($field)
+    {
+        $file = $_FILES[$field] ?? null;
+        if (!$file || !is_uploaded_file($file['tmp_name'])) {
+            $this->errors[$field] = "The $field must be an image file.";
+            return;
+        }
+        $mime = mime_content_type($file['tmp_name']);
+        if (strpos($mime, 'image/') !== 0) {
+            $this->errors[$field] = "The $field must be a valid image.";
         }
     }
 }

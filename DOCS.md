@@ -503,3 +503,110 @@ This will run the production build process (minifies, strips dev code, precompil
 
 - The old `build` command is now replaced by `bloom` for clarity and branding.
 - Use this command before deploying your app to production.
+
+## File Upload & Storage
+
+SproutPHP now includes a Storage helper for easy file uploads and URL generation, saving files in `public/uploads` for web accessibility.
+
+### Usage Example
+
+```php
+use Core\Support\Storage;
+
+// In your controller
+if ($request->hasFile('avatar')) {
+    $path = Storage::put($request->file('avatar'), 'avatars');
+    $url = Storage::url($path); // /uploads/avatars/filename.jpg
+}
+```
+
+- Files are saved in `public/uploads/{subdir}`.
+- URLs are generated as `/uploads/{subdir}/{filename}`.
+
+---
+
+## Modern Request File Access
+
+You can now access uploaded files in controllers using:
+
+```php
+$request->file('avatar'); // Returns the file array or null
+$request->hasFile('avatar'); // Returns true if a file was uploaded
+```
+
+Request data merges `$_GET`, `$_POST`, and JSON body for unified access.
+
+---
+
+## File Validation: mimes & image
+
+You can validate file uploads with new rules:
+
+- `mimes:jpg,png,gif` — File must have one of the allowed extensions
+- `image` — File must be a valid image (checked by MIME type)
+
+**Example:**
+
+```php
+$validator = new Validator($request->data, [
+    'avatar' => 'required|image|mimes:jpg,jpeg,png,gif'
+]);
+```
+
+---
+
+## HTMX File Upload with
+
+You can use your main form for file upload:
+
+```twig
+<form
+    id="validation-form"
+    hx-post="/validation-test"
+    hx-target="#form-container"
+    hx-swap="innerHTML"
+    hx-encoding="multipart/form-data"
+    hx-indicator="#form-progress"
+    method="POST"
+    enctype="multipart/form-data"
+    autocomplete="off"
+>
+    <!-- ...other fields... -->
+    <div>
+        <label for="avatar">Avatar:</label>
+        <input type="file" name="avatar" id="avatar" accept="image/*">
+        {% if errors.avatar %}
+            <div class="error" for="avatar" style="color: red;">{{ errors.avatar }}</div>
+        {% endif %}
+    </div>
+    <button type="submit">Submit</button>
+    <progress id="form-progress" value="0" max="100"></progress>
+</form>
+```
+
+- On success, your server can return a fragment with the uploaded avatar URL and preview.
+
+---
+
+## Error Clearing Script
+
+A generic script clears error messages for any field when focused:
+
+```html
+<script>
+  document.addEventListener("focusin", function (e) {
+    if (e.target.form && e.target.name) {
+      const error = e.target.form.querySelector(
+        `.error[for="${e.target.name}"]`
+      );
+      if (error) error.remove();
+    }
+  });
+</script>
+```
+
+- Works for all fields with `.error[for="fieldname"]`.
+
+---
+
+See the rest of this documentation for more on validation, request handling, and UI best practices.

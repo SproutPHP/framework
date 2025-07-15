@@ -6,6 +6,7 @@
     hx-indicator="#spinner"
     method="POST"
     autocomplete="off"
+    enctype="multipart/form-data"
 >
     {# CSRF TOKEN #}
     {{ csrf_field()|raw }}
@@ -23,17 +24,20 @@
             <div class="error" for="email" style="color: red;">{{ errors.email }}</div>
         {% endif %}
     </div>
+    <div>
+      <label for="avatar">Avatar:</label>
+      <input type="file" name="avatar" id="avatar" accept="image/*" />
+      {% if errors.avatar %}
+        <div class="error" for="avatar" style="color: red;">{{ errors.avatar }}</div>
+      {% endif %}
+    </div>
     <button type="submit">Submit
     </button>
 </form>
 <script>
 document.addEventListener('focusin', function(e) {
-  if (e.target.matches('input[name="name"]')) {
-    const error = e.target.closest('form').querySelector('.error[for="name"]');
-    if (error) error.remove();
-  }
-  if (e.target.matches('input[name="email"]')) {
-    const error = e.target.closest('form').querySelector('.error[for="email"]');
+  if (e.target.form && e.target.name) {
+    const error = e.target.form.querySelector(`.error[for="${e.target.name}"]`);
     if (error) error.remove();
   }
 });
