@@ -1,32 +1,31 @@
-# SproutPHP v0.1.7-alpha.2 Release Notes
+# SproutPHP v0.1.7-alpha.3 Release Notes
 
 ## 🎉 New Features & Improvements
 
-- **File Upload & Storage:** New Storage helper for easy file uploads and URL generation, saving files in `public/uploads`.
-- **Modern Request API:** Access uploaded files via `$request->file('avatar')` and `$request->hasFile('avatar')`.
-- **Unified Input:** Request data now merges `$_GET`, `$_POST`, and JSON body for easier access.
-- **Validation:** Added `mimes` and `image` rules for secure file validation.
-- **HTMX File Upload:** File upload with progress bar using only HTMX, no custom JS required.
-- **Error Handling:** Generic script to clear errors on focus for all fields.
-- **Docs:** Updated with new usage examples and best practices.
+- **Absolute Storage Path:** Storage root is now set to an absolute path by default for reliability; no need to set in .env for most use cases.
+- **Updated Storage Helper:** Improved documentation and usage for file uploads and URL generation.
+- **Symlink Command:** Enhanced for better cross-platform compatibility (Windows junctions, Linux/macOS symlinks).
+- **Documentation:** DOCS.md updated to reflect new storage system, usage, and best practices.
+- **Bugfix:** Prevented duplicate/nested storage paths in uploads.
+- **General Improvements:** Codebase and documentation refinements.
 
 ## 🛠️ Upgrade Guide
 
-- Use the new Storage helper and request methods for file uploads.
-- Update your forms to use the new validation rules and error-clearing script.
+- Use the new absolute storage root (no .env override needed).
+- Run `php sprout symlink:create` to ensure correct symlink/junction for uploads.
 - See DOCS.md for updated usage and examples.
 
 ## 📅 Release Date
 
-2025-07-15
+2024-06-13
 
 ## 📦 Framework Version
 
-v0.1.7-alpha.2
+v0.1.7-alpha.3
 
 ---
 
-**Release Date**: 2025-07-15  
-**Framework Version**: v0.1.7-alpha.2  
+**Release Date**: 2024-06-13  
+**Framework Version**: v0.1.7-alpha.3  
 **PHP Version**: 8.1+  
 **Composer**: 2.0+
