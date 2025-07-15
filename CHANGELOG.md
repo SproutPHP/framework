@@ -9,12 +9,20 @@ Earlier releases (`v0.1.0-alpha.1` to `v0.1.7-alpha.1`) were experimental and do
 
 ## [v0.1.7-alpha.2] - 2025-07-15
 
-### Changed
+### Added
+- Storage helper for file uploads, saving to `public/uploads` and generating URLs.
+- Modern file access in controllers: `$request->file('avatar')`, `$request->hasFile('avatar')`.
+- Unified request data: merges `$_GET`, `$_POST`, and JSON body.
+- `mimes` and `image` validation rules for secure file uploads.
+- HTMX-powered file upload with progress bar in the main form (no JS required).
+- Generic error-clearing script for all form fields.
 
-- **Adopted proper SemVer pre-release flow:** All future releases will follow `alpha.n → beta.n → rc.n → stable`.
-- **Stability commitment:** This release marks the beginning of structured, progressive versioning and a focus on stability.
-- **Changelog and versioning policy:** Added `CHANGELOG.md` and `VERSIONING.md` to document release history and policy.
-- **(List any new features, bug fixes, or improvements here)**
+### Changed
+- File uploads are now web-accessible by default.
+- Improved documentation for file upload, validation, and request handling.
+
+### Fixed
+- No more duplicate `/uploads/uploads/...` in file URLs.
 
 ---
 

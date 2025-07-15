@@ -1,42 +1,32 @@
-# SproutPHP v0.1.7-alpha.1 Release Notes
+# SproutPHP v0.1.7-alpha.2 Release Notes
 
 ## 🎉 New Features & Improvements
 
-### Validation System
-
-- **Expanded validation rules**: Now supports numeric, integer, string, boolean, array, in, not_in, same, different, confirmed, regex, url, ip, date, before, after, nullable, present, digits, digits_between, size, starts_with, ends_with, uuid, and more.
-- **Improved documentation**: DOCS.md now lists all available rules and usage examples.
-- **Better error clearing**: Validation errors are cleared on input focus for a smoother UX.
-
-### Dark/Light Mode Support
-
-- **PicoCSS dark/light mode toggle**: Optional sun/moon icon button in the navbar for instant theme switching.
-- **Theme preference**: Saved in localStorage and applied instantly.
-- **Post-install option**: Users can choose to auto-include the toggle during installation.
-
-### Other Improvements
-
-- **Post-install script**: Now prompts for dark/light mode toggle inclusion.
-- **Code cleanup and bug fixes**: Heredoc indentation, improved scripts, and UI polish.
-- **Documentation updates**: More examples and clearer instructions for new features.
+- **File Upload & Storage:** New Storage helper for easy file uploads and URL generation, saving files in `public/uploads`.
+- **Modern Request API:** Access uploaded files via `$request->file('avatar')` and `$request->hasFile('avatar')`.
+- **Unified Input:** Request data now merges `$_GET`, `$_POST`, and JSON body for easier access.
+- **Validation:** Added `mimes` and `image` rules for secure file validation.
+- **HTMX File Upload:** File upload with progress bar using only HTMX, no custom JS required.
+- **Error Handling:** Generic script to clear errors on focus for all fields.
+- **Docs:** Updated with new usage examples and best practices.
 
 ## 🛠️ Upgrade Guide
 
-- Use the new validation rules in your controllers and forms.
-- To add the dark/light mode toggle, re-run the post-install script or add the button and script as shown in DOCS.md.
-- See DOCS.md for updated usage examples.
+- Use the new Storage helper and request methods for file uploads.
+- Update your forms to use the new validation rules and error-clearing script.
+- See DOCS.md for updated usage and examples.
 
 ## 📅 Release Date
 
-July 2024
+2025-07-15
 
 ## 📦 Framework Version
 
-v0.1.7-alpha.1
+v0.1.7-alpha.2
 
 ---
 
-**Release Date**: July 2024  
-**Framework Version**: v0.1.7-alpha.1  
+**Release Date**: 2025-07-15  
+**Framework Version**: v0.1.7-alpha.2  
 **PHP Version**: 8.1+  
 **Composer**: 2.0+
