@@ -7,6 +7,20 @@ Earlier releases (`v0.1.0-alpha.1` to `v0.1.7-alpha.1`) were experimental and do
 
 ---
 
+## [v0.1.7-alpha.3] - 2024-06-13
+
+### Added
+- Storage root is now set to an absolute path by default for reliability (no .env needed)
+- Improved Storage helper documentation and usage
+- Enhanced symlink command for better cross-platform compatibility
+- Updated documentation for new storage system and best practices
+
+### Fixed
+- Prevented duplicate/nested storage paths in uploads
+- General codebase and documentation improvements
+
+---
+
 ## [v0.1.7-alpha.2] - 2025-07-15
 
 ### Added

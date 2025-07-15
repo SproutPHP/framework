@@ -504,9 +504,9 @@ This will run the production build process (minifies, strips dev code, precompil
 - The old `build` command is now replaced by `bloom` for clarity and branding.
 - Use this command before deploying your app to production.
 
-## File Upload & Storage
+## File Upload & Storage (v0.1.7+)
 
-SproutPHP now includes a Storage helper for easy file uploads and URL generation, saving files in `public/uploads` for web accessibility.
+SproutPHP now includes a robust Storage helper for file uploads and URL generation, saving files in `storage/app/public` for web accessibility via a symlink.
 
 ### Usage Example
 
@@ -516,44 +516,71 @@ use Core\Support\Storage;
 // In your controller
 if ($request->hasFile('avatar')) {
     $path = Storage::put($request->file('avatar'), 'avatars');
-    $url = Storage::url($path); // /uploads/avatars/filename.jpg
+    $url = Storage::url($path); // /storage/avatars/filename.jpg
 }
 ```
 
-- Files are saved in `public/uploads/{subdir}`.
-- URLs are generated as `/uploads/{subdir}/{filename}`.
+- Files are saved in `storage/app/public/{subdir}`.
+- URLs are generated as `/storage/{subdir}/{filename}`.
+- The `public/storage` directory is a symlink (or junction on Windows) to `storage/app/public`.
 
----
+### Storage Configuration
 
-## Modern Request File Access
-
-You can now access uploaded files in controllers using:
-
-```php
-$request->file('avatar'); // Returns the file array or null
-$request->hasFile('avatar'); // Returns true if a file was uploaded
-```
-
-Request data merges `$_GET`, `$_POST`, and JSON body for unified access.
-
----
-
-## File Validation: mimes & image
-
-You can validate file uploads with new rules:
-
-- `mimes:jpg,png,gif` — File must have one of the allowed extensions
-- `image` — File must be a valid image (checked by MIME type)
-
-**Example:**
+In `config/storage.php`:
 
 ```php
-$validator = new Validator($request->data, [
-    'avatar' => 'required|image|mimes:jpg,jpeg,png,gif'
-]);
+'public' => [
+    'root' => env('STORAGE_PUBLIC_ROOT', 'storage/app/public'),
+    'url' => env('STORAGE_PUBLIC_LINK', '/storage'),
+    'visibility' => 'public',
+],
 ```
 
----
+### Creating the Symlink
+
+To make uploaded files accessible via the web, create a symlink:
+
+```bash
+php sprout symlink:create
+```
+- This links `public/storage` to `storage/app/public`.
+- On Windows, a directory junction is created for compatibility.
+
+### Folder Structure
+
+```
+project-root/
+├── public/
+│   ├── assets/
+│   ├── index.php
+│   └── storage/  # symlink → ../storage/app/public
+├── storage/
+│   └── app/
+│       └── public/
+│           └── avatars/
+│               └── uploadedfile.jpg
+```
+
+### Accessing Uploaded Files
+
+- After upload, files are accessible at `/storage/avatars/filename.jpg`.
+- The `Storage::url($path)` helper generates the correct public URL.
+
+### Example Controller Snippet
+
+```php
+if ($request->hasFile('avatar')) {
+    $file = $request->file('avatar');
+    $path = Storage::put($file, 'avatars');
+    $avatarUrl = Storage::url($path); // Use in your views
+}
+```
+
+### Notes
+- Always use the `Storage` helper for uploads and URLs.
+- The storage root is now absolute for reliability.
+- No need to set or override the storage root in `.env` unless you have a custom setup.
+- The CLI symlink command ensures public access to uploaded files.
 
 ## HTMX File Upload with
 
