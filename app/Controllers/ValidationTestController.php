@@ -8,6 +8,14 @@ class ValidationTestController
 {
     public function index()
     {
+        if (is_htmx_request()) {
+            // Only return the form fragment for HTMX requests
+            return view('partials/validation-test', [
+                'errors' => [],
+                'old' => [],
+            ]);
+        }
+
         return view('validation-test', ['title' => 'ValidationTestController Index']);
     }
 
