@@ -54,6 +54,47 @@ class HomeController {
 - **Enhanced security** with configurable XSS and CSP protection
 - **HTMX and PicoCSS pre-installed**
 
+## Features & Improvements Coming Soon
+
+| Feature/Improvement                | Status      | Notes/Suggestions                                 |
+|------------------------------------|-------------|---------------------------------------------------|
+| [ ] Event System                   | In Consideration | Event/listener system                             |
+| [ ] Localization (i18n)            | In Consideration | Translation files and helpers                     |
+| [ ] Caching (Redis, Memcached, etc.)| In Consideration | Cache abstraction, Redis/Memcached support        |
+| [ ] Testing Utilities              | In Consideration | PHPUnit integration and helpers                   |
+| [ ] File Uploads & Storage         | In Consideration | File upload and storage abstraction               |
+| [ ] Command Bus/CQRS               | In Consideration | Command handler system                            |
+| [ ] Form Builder                   | In Consideration | Dynamic form generation and validation            |
+| [ ] API Support (JWT, rate limiting, etc.) | In Consideration | API middleware, JWT, transformers         |
+| [ ] ORM/Query Builder              | In Consideration | Query builder/ORM for easier DB access            |
+| [ ] Model Relationships            | In Consideration | hasOne, hasMany, belongsTo, etc.                  |
+| [ ] Package Installation System    | In Consideration | Install and manage reusable packages/plugins       |
+
+## Optional Packages
+
+SproutPHP is designed to be lightweight. The following features are (or will be) available as optional packages, so you can install only what you need:
+
+- Authentication & Authorization
+- Admin Panel/CRUD
+- Advanced Error Handling
+- API Support (JWT, rate limiting, etc.)
+- File Uploads & Storage
+- Queue/Job System
+- Event System
+- Localization (i18n)
+- Caching (Redis, Memcached, etc.)
+- Testing Utilities
+- Asset Pipeline
+- Social Login
+- Notifications
+- Payment Integration
+- SEO Tools
+- Form Builder
+- User Profile/Avatar
+- Two-Factor Authentication
+- Command Bus/CQRS
+- GraphQL Support
+
 ## What's NOT Included
 
 - No asset pipeline or `node_modules`
