@@ -4,7 +4,7 @@ namespace Core\Support;
 
 class Storage
 {
-    protected static $baseDir = __DIR__ . '/../../storage/uploads';
+    protected static $baseDir = __DIR__ . '/../../public/uploads';
 
     /**
      * Save uploaded file
@@ -28,7 +28,7 @@ class Storage
 
         if (move_uploaded_file($file['tmp_name'], $target)) {
             // Return relative path for storage
-            return 'uploads' . ($subdir ? '/' . trim($subdir, '/') : '') . '/' . $filename;
+            return ($subdir ? '/' . trim($subdir, '/') : '') . '/' . $filename;
         }
 
         return false;
@@ -43,10 +43,10 @@ class Storage
     }
 
     /**
-     * Get a public URL for a stored file (assuming /storage is web-accessible/storage is web-accessible)
+     * Get a public URL for a stored file (assuming /uploads is web-accessible/storage is web-accessible)
      */
     public static function url($relative)
     {
-        return '/storage/' . ltrim($relative, '/');
+        return '/uploads/' . ltrim($relative, '/');
     }
 }
