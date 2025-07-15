@@ -62,7 +62,7 @@ class HomeController {
 | [ ] Localization (i18n)                    | In Consideration | Translation files and helpers                |
 | [ ] Caching (Redis, Memcached, etc.)       | In Consideration | Cache abstraction, Redis/Memcached support   |
 | [ ] Testing Utilities                      | In Consideration | PHPUnit integration and helpers              |
-| [ ] File Uploads & Storage                 | In Consideration | File upload and storage abstraction          |
+| [x] File Uploads & Storage                 | In Consideration | File upload and storage abstraction          |
 | [ ] Command Bus/CQRS                       | In Consideration | Command handler system                       |
 | [ ] Form Builder                           | In Consideration | Dynamic form generation and validation       |
 | [ ] API Support (JWT, rate limiting, etc.) | In Consideration | API middleware, JWT, transformers            |
