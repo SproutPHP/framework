@@ -11,6 +11,7 @@ use Core\Console\Commands\MakeView;
 use Core\Console\Commands\Migrate;
 use Core\Console\Commands\Build;
 use Core\Console\Commands\MakeMiddleware;
+use Core\Console\Commands\SymlinkCreate;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -87,6 +88,10 @@ switch ($command) {
             exit(1);
         }
         MakeMiddleware::handle($target);
+        break;
+
+    case 'symlink:create':
+        SymlinkCreate::handle();
         break;
 
     case 'env':
