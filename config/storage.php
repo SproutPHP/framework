@@ -4,7 +4,7 @@ return [
     'default' => env('STORAGE_DISK', 'public'),
     'disks' => [
         'public' => [
-            'root' => env('PUBLIC_STORAGE_PATH', 'storage/app/public'),
+            'root' => env('STORAGE_PUBLIC_ROOT', 'storage/app/public'),
             'url' => env('STORAGE_PUBLIC_LINK', '/storage'),
             'visibility' => 'public',
         ],
