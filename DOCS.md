@@ -56,19 +56,19 @@ class HomeController {
 
 ## Features & Improvements Coming Soon
 
-| Feature/Improvement                | Status      | Notes/Suggestions                                 |
-|------------------------------------|-------------|---------------------------------------------------|
-| [ ] Event System                   | In Consideration | Event/listener system                             |
-| [ ] Localization (i18n)            | In Consideration | Translation files and helpers                     |
-| [ ] Caching (Redis, Memcached, etc.)| In Consideration | Cache abstraction, Redis/Memcached support        |
-| [ ] Testing Utilities              | In Consideration | PHPUnit integration and helpers                   |
-| [ ] File Uploads & Storage         | In Consideration | File upload and storage abstraction               |
-| [ ] Command Bus/CQRS               | In Consideration | Command handler system                            |
-| [ ] Form Builder                   | In Consideration | Dynamic form generation and validation            |
-| [ ] API Support (JWT, rate limiting, etc.) | In Consideration | API middleware, JWT, transformers         |
-| [ ] ORM/Query Builder              | In Consideration | Query builder/ORM for easier DB access            |
-| [ ] Model Relationships            | In Consideration | hasOne, hasMany, belongsTo, etc.                  |
-| [ ] Package Installation System    | In Consideration | Install and manage reusable packages/plugins       |
+| Feature/Improvement                        | Status           | Notes/Suggestions                            |
+| ------------------------------------------ | ---------------- | -------------------------------------------- |
+| [ ] Event System                           | In Consideration | Event/listener system                        |
+| [ ] Localization (i18n)                    | In Consideration | Translation files and helpers                |
+| [ ] Caching (Redis, Memcached, etc.)       | In Consideration | Cache abstraction, Redis/Memcached support   |
+| [ ] Testing Utilities                      | In Consideration | PHPUnit integration and helpers              |
+| [ ] File Uploads & Storage                 | In Consideration | File upload and storage abstraction          |
+| [ ] Command Bus/CQRS                       | In Consideration | Command handler system                       |
+| [ ] Form Builder                           | In Consideration | Dynamic form generation and validation       |
+| [ ] API Support (JWT, rate limiting, etc.) | In Consideration | API middleware, JWT, transformers            |
+| [ ] ORM/Query Builder                      | In Consideration | Query builder/ORM for easier DB access       |
+| [ ] Model Relationships                    | In Consideration | hasOne, hasMany, belongsTo, etc.             |
+| [ ] Package Installation System            | In Consideration | Install and manage reusable packages/plugins |
 
 ## Optional Packages
 
@@ -129,13 +129,15 @@ See `CONFIGURATION.md` for complete documentation.
 SproutPHP now includes a minimal, extensible validation system for validating user input in controllers and forms.
 
 ### Overview
-- Validate associative arrays (e.g., $_POST, custom data)
+
+- Validate associative arrays (e.g., $\_POST, custom data)
 - Supports common rules: required, email, min, max, numeric, string, in, etc.
 - Collects and returns error messages
 - Easily display errors in Twig views
 - Extensible: add your own rules as needed
 
 ### Example Usage in a Controller
+
 ```php
 use Core\Support\Validator;
 
@@ -145,6 +147,8 @@ public function handleForm()
     $validator = new Validator($data, [
         'email' => 'required|email',
         'name' => 'required|min:3',
+        'age' => 'required|numeric|min:18',
+        'role' => 'in:admin,user,guest',
     ]);
 
     if ($validator->fails()) {
@@ -160,17 +164,40 @@ public function handleForm()
 ```
 
 ### Available Rules
+
 - `required` — Field must not be empty
 - `email` — Must be a valid email address
 - `min:N` — Minimum length N
 - `max:N` — Maximum length N
 - `numeric` — Must be a number
+- `integer` — Must be an integer
 - `string` — Must be a string
+- `boolean` — Must be a boolean value
+- `array` — Must be an array
 - `in:val1,val2,...` — Value must be one of the listed options
+- `not_in:val1,val2,...` — Value must NOT be one of the listed options
+- `same:field` — Must match another field
+- `different:field` — Must be different from another field
+- `confirmed` — Must have a matching {field}\_confirmation value
+- `regex:pattern` — Must match a regex pattern
+- `url` — Must be a valid URL
+- `ip` — Must be a valid IP address
+- `date` — Must be a valid date
+- `before:date` — Must be a date before the given date
+- `after:date` — Must be a date after the given date
+- `nullable` — Field is allowed to be null (affects other rules)
+- `present` — Field must be present in the input (even if empty)
+- `digits:N` — Must be exactly N digits
+- `digits_between:min,max` — Must be between min and max digits
+- `size:N` — Must be exactly N characters (for strings) or N value (for numbers/arrays)
+- `starts_with:val1,val2,...` — Must start with one of the given values
+- `ends_with:val1,val2,...` — Must end with one of the given values
+- `uuid` — Must be a valid UUID
 
 You can add more rules by extending the Validator class.
 
 ### Displaying Errors in Twig
+
 ```twig
 <form method="POST">
     <input type="text" name="name" value="{{ old.name|e }}">
@@ -186,8 +213,69 @@ You can add more rules by extending the Validator class.
 ```
 
 ### Notes
+
 - Use the `validate()` helper for a shortcut: `validate($data, $rules)`
 - See the Validator class in `core/Support/Validator.php` for more details and to add custom rules.
+
+## Dark/Light Mode Support
+
+SproutPHP supports instant dark and light mode switching using PicoCSS's built-in color schemes. The framework provides an optional sun/moon icon button in the navbar to toggle the theme.
+
+- PicoCSS automatically applies dark or light styles based on the `data-theme` attribute on `<html>`.
+- The toggle button updates `data-theme` to `dark` or `light` and saves the preference in localStorage.
+- No extra CSS is needed for the color scheme itself—PicoCSS handles all color changes.
+
+### Example Usage
+
+Add this to your navbar:
+
+```html
+<button
+  id="theme-toggle-btn"
+  aria-label="Toggle dark/light mode"
+  style="background:none;border:none;cursor:pointer;font-size:1.5rem;"
+>
+  <span id="theme-icon">☀️</span>
+</button>
+```
+
+Add this script (in your layout or navbar):
+
+```html
+<script>
+  (function () {
+    const themeBtn = document.getElementById("theme-toggle-btn");
+    const themeIcon = document.getElementById("theme-icon");
+    const html = document.documentElement;
+    if (!themeBtn || !themeIcon) return;
+    function setInitialTheme() {
+      let theme = localStorage.getItem("theme");
+      if (!theme) {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+      html.setAttribute("data-theme", theme);
+      themeIcon.textContent = theme === "dark" ? "🌙" : "☀️";
+    }
+    setInitialTheme();
+    themeBtn.addEventListener("click", function () {
+      const currentTheme = html.getAttribute("data-theme");
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      html.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      themeIcon.textContent = newTheme === "dark" ? "🌙" : "☀️";
+    });
+  })();
+</script>
+```
+
+**Result:**
+
+- The icon (☀️ or 🌙) is shown in the navbar.
+- Clicking the icon toggles the theme and updates the icon instantly.
+- The theme preference is saved in `localStorage`.
+- PicoCSS automatically applies the correct color scheme.
 
 ## Using HTMX and PicoCSS
 
@@ -209,6 +297,7 @@ SproutPHP uses a **hybrid system** for making PHP helper functions available in 
 ### Usage
 
 1. **Add a helper to `helpers.php`:**
+
    ```php
    // core/Support/helpers.php
    if (!function_exists('my_custom_helper')) {
@@ -217,7 +306,9 @@ SproutPHP uses a **hybrid system** for making PHP helper functions available in 
        }
    }
    ```
+
    Now you can use it in Twig:
+
    ```twig
    {{ my_custom_helper('hello') }}
    ```
@@ -231,6 +322,7 @@ SproutPHP uses a **hybrid system** for making PHP helper functions available in 
    ```
 
 ### How it works
+
 - All helpers in `helpers.php` are auto-registered.
 - Any helpers listed in `twig_helpers` are also registered (even if not in `helpers.php`).
 - If a helper exists in both, it is only registered once.
@@ -238,6 +330,7 @@ SproutPHP uses a **hybrid system** for making PHP helper functions available in 
 **This means most of the time, you just add your helper to `helpers.php` and it works in Twig!**
 
 ### Note on the `view()` Helper
+
 - The `view()` helper now supports a third parameter `$return` (default: `false`).
 - If `$return` is `true`, it returns the rendered string instead of echoing it. This is used by the generic fragment helper to inject fragments into layouts.
 
@@ -257,6 +350,7 @@ Route::get('/my-fragment', function () {
     render_fragment_or_full('partials/my-fragment', $data); // uses layouts/base.twig by default
 });
 ```
+
 - **Best for most use cases.**
 - Keeps your code DRY and consistent.
 - Ensures direct URL access always returns a full page.
@@ -277,6 +371,7 @@ Route::get('/my-fragment', function () {
     }
 });
 ```
+
 - **Use when you need custom logic per route.**
 - Useful for advanced scenarios or when you want to handle fragments differently.
 
@@ -300,6 +395,7 @@ Sometimes you want a link to always trigger a full page reload (for example, you
   ```
 
 **Best Practice:**
+
 - Use these attributes for any link that should always reload the full page, such as your site home or links to external sites.
 - This prevents issues where the page loses its CSS/JS context due to HTMX fragment swaps.
 
@@ -313,6 +409,7 @@ SproutPHP includes a built-in CORS middleware, registered globally by default bu
 - By default, CORS is **disabled** for security. Enable only if you need cross-origin requests (e.g., for APIs or frontend apps).
 
 **Example config/security.php:**
+
 ```php
 'cors' => [
     'enabled' => env('CORS_ENABLED', false),
@@ -323,6 +420,7 @@ SproutPHP includes a built-in CORS middleware, registered globally by default bu
 ```
 
 **Security Note:**
+
 - Only enable CORS for trusted origins in production. Use `*` for development only.
 
 ## CLI Reference
@@ -350,8 +448,8 @@ SproutPHP is a living, growing project—just like its name! Contributions, idea
 SproutPHP includes a post-install script that lets you choose your preferred PicoCSS build right after running `composer install`.
 
 ### How it Works
-- After installing dependencies, you'll be prompted to select a PicoCSS build:
-  0. Default Sprout Layout (Minimal PicoCSS) — just press Enter or choose 0 for the default
+
+- After installing dependencies, you'll be prompted to select a PicoCSS build: 0. Default Sprout Layout (Minimal PicoCSS) — just press Enter or choose 0 for the default
   1. Minimal (Standard)
   2. Classless
   3. Conditional
@@ -366,17 +464,19 @@ SproutPHP includes a post-install script that lets you choose your preferred Pic
 - The script will download the latest PicoCSS file from the CDN and save it as `public/assets/css/sprout.min.css`.
 
 ### Use Cases
-| Use Case | Choose This Option |
-|----------|-------------------|
-| Default Sprout layout, minimal PicoCSS | 0 (or press Enter) |
-| Simple blog, no layout classes | Classless |
-| Full control, grid, utilities | Minimal (Standard) |
-| Themed look + classless | Classless + Color Theme |
-| Toggle light/dark with JS | Conditional or Conditional + Color Theme |
-| Full-width layout, no classes | Fluid Classless |
-| Define your own classes | Color Palette Only |
+
+| Use Case                               | Choose This Option                       |
+| -------------------------------------- | ---------------------------------------- |
+| Default Sprout layout, minimal PicoCSS | 0 (or press Enter)                       |
+| Simple blog, no layout classes         | Classless                                |
+| Full control, grid, utilities          | Minimal (Standard)                       |
+| Themed look + classless                | Classless + Color Theme                  |
+| Toggle light/dark with JS              | Conditional or Conditional + Color Theme |
+| Full-width layout, no classes          | Fluid Classless                          |
+| Define your own classes                | Color Palette Only                       |
 
 ### Changing PicoCSS Later
+
 - You can re-run the post-install script at any time:
   ```bash
   php core/Console/PostInstall.php
@@ -388,6 +488,7 @@ SproutPHP includes a post-install script that lets you choose your preferred Pic
 - Or, manually download your preferred PicoCSS file from [jsdelivr PicoCSS CDN](https://cdn.jsdelivr.net/npm/@picocss/pico@latest/css/) and place it in `public/assets/css/sprout.min.css`.
 
 ### Advanced
+
 - All PicoCSS builds and color themes are available. See the [PicoCSS documentation](https://picocss.com/docs/) for more details on each build type and theme.
 
 ## Production Build (bloom Command)
@@ -402,4 +503,3 @@ This will run the production build process (minifies, strips dev code, precompil
 
 - The old `build` command is now replaced by `bloom` for clarity and branding.
 - Use this command before deploying your app to production.
-
