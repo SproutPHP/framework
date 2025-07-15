@@ -9,6 +9,11 @@ class SymlinkCreate
         $publicStorage = __DIR__ . '/../../../public/storage';
         $target = __DIR__ . '/../../../storage/app/public';
 
+        // Ensure the target directory exists
+        if (!is_dir($target)) {
+            mkdir($target, 0777, true);
+        }
+
         // Remove existing symlink or directory if present
         if (is_link($publicStorage) || is_dir($publicStorage)) {
             if (is_link($publicStorage)) {
@@ -19,24 +24,33 @@ class SymlinkCreate
             }
         }
 
-        // Try PHP's symlink() first (works on Windows with Developer Mode)
-        $result = @symlink(realpath($target), $publicStorage);
-        if ($result) {
-            echo "✅ Symlink created: public/storage → storage/app/public\n";
-            return;
-        }
-
         // If on Windows and symlink() failed, try mklink as admin
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $cmd = 'mklink /D "' . str_replace('/', '\\', realpath(dirname($publicStorage))) . '\\storage" "' . str_replace('/', '\\', realpath($target)) . '"';
+            $resolvedLinkDir = realpath(dirname($publicStorage));
+            $resolvedTarget = realpath($target);
+            $link = $resolvedLinkDir ? $resolvedLinkDir . '\\storage' : false;
+
+            if (!$resolvedLinkDir || !$resolvedTarget) {
+                echo "❌ One or both paths do not exist.\n";
+                return;
+            }
+
+            // Use /J for junction (works without admin/Dev Mode)
+            $cmd = 'mklink /J "' . $link . '" "' . $resolvedTarget . '"';
             exec('cmd /c "' . $cmd . '"', $output, $result);
             if ($result === 0) {
-                echo "✅ Symlink created: public/storage → storage/app/public\n";
+                echo "✅ Symlink (junction) created: public/storage → storage/app/public\n";
             } else {
-                echo "❌ Failed to create symlink on Windows. Try running as administrator or enable Developer Mode.\n";
+                echo "❌ Failed to create symlink (junction) on Windows. Try running as administrator or check permissions.\n";
             }
         } else {
-            echo "❌ Failed to create symlink. Try running with sufficient permissions.\n";
+            $result = @symlink(realpath($target), $publicStorage);
+            if ($result) {
+                echo "✅ Symlink created: public/storage → storage/app/public\n";
+                return;
+            } else {
+                echo "❌ Failed to create symlink. Try running with sufficient permissions.\n";
+            }
         }
     }
 
