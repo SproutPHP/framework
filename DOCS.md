@@ -1,5 +1,35 @@
 # SproutPHP Documentation
 
+## [v0.1.7-beta.1] - 2024-06-09
+
+### New Features & Improvements
+
+- **Dynamic Route Parameters:** Define routes with parameters (e.g., `/user/{id}`, `/blog/{slug}`) for flexible CRUD and API endpoints.
+- **Robust CSRF Protection:** Middleware-based CSRF protection for all state-changing requests (forms, AJAX, HTMX). Use `{{ csrf_field()|raw }}` in forms and `{{ csrf_token() }}` for AJAX/HTMX headers. All tokens use the `_csrf_token` session key.
+- **SPA-like Interactivity with HTMX:** Use HTMX attributes for seamless, partial updates (e.g., form submissions, file uploads) and request indicators (spinners). Example:
+  ```html
+  <form
+    hx-post="/validation-test"
+    hx-target="#form-container"
+    hx-swap="innerHTML"
+    hx-indicator="#spinner"
+    hx-trigger="submit delay:500ms"
+  >
+    ...
+  </form>
+  ```
+- **Private File Handling:** Upload files to private storage (not web-accessible). Download private files only via internal controller methods (no direct links). Example:
+  ```php
+  // Upload
+  Storage::put($file, '', 'private');
+  // Download (controller)
+  $path = Storage::path($filename, 'private');
+  ```
+- **Storage Improvements:** Storage paths are now always resolved relative to the project root. Public/private separation, symlink support for serving public files, and compatibility with the PHP built-in server for downloads.
+- **UI/UX:** Two-column grid for validation and file upload forms, spinner/indicator support, and SPA feel for user interactions.
+
+---
+
 ## Included by Default
 
 - **HTMX** for modern, interactive UIs (already loaded in your base template)
@@ -543,6 +573,7 @@ To make uploaded files accessible via the web, create a symlink:
 ```bash
 php sprout symlink:create
 ```
+
 - This links `public/storage` to `storage/app/public`.
 - On Windows, a directory junction is created for compatibility.
 
@@ -577,6 +608,7 @@ if ($request->hasFile('avatar')) {
 ```
 
 ### Notes
+
 - Always use the `Storage` helper for uploads and URLs.
 - The storage root is now absolute for reliability.
 - No need to set or override the storage root in `.env` unless you have a custom setup.

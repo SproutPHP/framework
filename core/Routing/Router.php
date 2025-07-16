@@ -10,7 +10,7 @@ class Router
 {
     protected $routes = [];
 
-    public  function registerRoute($route)
+    public function registerRoute($route)
     {
         $this->routes[$route->method][$route->uri] = $route;
     }
@@ -48,20 +48,49 @@ class Router
         $method = $request->method;
         $uri = $request->uri;
 
-        if (!isset($this->routes[$method][$uri])) {
-            http_response_code(404);
-            if (config('app.env', 'local') === 'local') {
-                echo "<div style='padding:1.5rem; font-family:monospace; background:#fff3f3; border:1px solid #ffb3b3; color:#b30000;'>";
-                echo "<h2>404: Route not found</h2>";
-                echo "</div>";
-            } else {
-                echo \Core\View\View::render('errors/404');
-            }
-            exit;
+        // Try exact match first
+        if (isset($this->routes[$method][$uri])) {
+            $route = $this->routes[$method][$uri];
+            return $this->runRoute($route, $request);
         }
 
-        $route = $this->routes[$method][$uri];
+        // Try pattern match for dynamic parameters
+        if (isset($this->routes[$method])) {
+            foreach ($this->routes[$method] as $pattern => $route) {
+                $paramNames = [];
+                $regex = preg_replace_callback('/\{([a-zA-Z0-9_]+)(:([^}]+))?\}/', function ($matches) use (&$paramNames) {
+                    $paramNames[] = $matches[1];
+                    if (isset($matches[3])) {
+                        return '(' . $matches[3] . ')'; // custom regex
+                    }
+                    return '([^/]+)'; // default: match anything except /
+                }, $pattern);
+                $regex = '#^' . $regex . '$#';
+                if (preg_match($regex, $uri, $matches)) {
+                    array_shift($matches); // remove full match
+                    $params = array_combine($paramNames, $matches);
+                    return $this->runRoute($route, $request, $params);
+                }
+            }
+        }
 
+        // No match found
+        http_response_code(404);
+        if (config('app.env', 'local') === 'local') {
+            echo "<div style='padding:1.5rem; font-family:monospace; background:#fff3f3; border:1px solid #ffb3b3; color:#b30000;'>";
+            echo "<h2>404: Route not found</h2>";
+            echo "</div>";
+        } else {
+            echo \Core\View\View::render('errors/404');
+        }
+        exit;
+    }
+
+    /**
+     * Run the matched route with parameters
+     */
+    protected function runRoute($route, $request, $params = [])
+    {
         /**
          * Collecting middleware Route-specific
          */
@@ -81,14 +110,14 @@ class Router
 
         $kernel = new MiddlewareKernel($resolvedMiddleware);
 
-        $coreHandler = function ($request) use ($route) {
+        $coreHandler = function ($request) use ($route, $params) {
             $callback = $route->action;
 
             /**
              * If it is a closure
              */
             if (is_callable($callback)) {
-                return $callback();
+                return call_user_func_array($callback, $params);
             }
 
             /**
@@ -103,7 +132,7 @@ class Router
                     $controller = new $controllerClass;
 
                     if (method_exists($controller, $methodName)) {
-                        return $controller->$methodName();
+                        return call_user_func_array([$controller, $methodName], $params);
                     }
                 }
 

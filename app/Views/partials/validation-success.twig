@@ -1,9 +1,12 @@
 <div class="success">
-    <h2>Form Submitted Successfully!</h2>
-    <p>Name: {{ name|e }}</p>
-    <p>Email: {{ email|e }}</p>
-    {% if avatar_url %}
-        <p>Avatar: <img src="{{ avatar_url }}" alt="Avatar" style="max-width:100px;max-height:100px;"></p>
-    {% endif %}
-    <button hx-get="/validation-test" hx-target="#main-content" hx-push-url="true">Submit Another</button>
+	<h2>Form Submitted Successfully!</h2>
+	<p>Name:
+		{{ name|e }}</p>
+	<p>Email:
+		{{ email|e }}</p>
+	{% if avatar_url %}
+		<p>Avatar:
+			<img src="{{ avatar_url }}" alt="Avatar" style="max-width:100px;max-height:100px;"></p>
+	{% endif %}
+	<button hx-get="/validation-test" hx-target="#form-container" hx-push-url="true">Submit Another</button>
 </div>

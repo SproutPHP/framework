@@ -39,7 +39,8 @@ Route::get('/debug-config', function () {
     $middlewares = config('app.global_middleware', []);
     $middleware_info = [];
     foreach ($middlewares as $middleware) {
-        if (!$middleware) continue; // skip empty values
+        if (!$middleware)
+            continue; // skip empty values
         $middleware_info[] = [
             'name' => $middleware,
             'exists' => class_exists($middleware),
@@ -87,3 +88,5 @@ Route::get('/route-middleware-test', function () {
 // 🌱 Resource routes for Validation-testController
 Route::get('/validation-test', 'ValidationTestController@index');
 Route::post('/validation-test', 'ValidationTestController@handleForm');
+Route::post('/validation-test/private-upload', 'ValidationTestController@handlePrivateUpload');
+Route::get('/validation-test/private-download', 'ValidationTestController@downloadPrivateFile');
