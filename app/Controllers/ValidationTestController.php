@@ -47,6 +47,7 @@ class ValidationTestController
 
     public function handleForm()
     {
+        sleep(1); // 1 second delay
         $request = Request::capture();
 
         $data = [
