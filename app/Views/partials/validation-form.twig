@@ -1,6 +1,6 @@
 {% include "components/spinner.twig" %}
 <form
-	hx-post="/validation-test" hx-target="#form-container" hx-swap="innerHTML" hx-indicator="#spinner" method="POST" autocomplete="off" enctype="multipart/form-data" hx-trigger="submit delay:500ms">
+	hx-post="/validation-test" hx-target="#form-container" hx-swap="innerHTML" hx-indicator="#spinner" method="POST" autocomplete="off" enctype="multipart/form-data">
 	{# CSRF TOKEN #}
 	{{ csrf_field()|raw }}
 	<div>
