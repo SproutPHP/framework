@@ -67,7 +67,8 @@ if (!function_exists('env')) {
             $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
                 $line = trim($line);
-                if ($line === '' || $line[0] === '#') continue;
+                if ($line === '' || $line[0] === '#')
+                    continue;
 
                 [$k, $v] = explode('=', $line, 2);
                 $env[trim($k)] = trim($v);
@@ -78,10 +79,14 @@ if (!function_exists('env')) {
         // Cast boolean-like strings to real booleans
         if (is_string($value)) {
             $lower = strtolower($value);
-            if ($lower === 'true') return true;
-            if ($lower === 'false') return false;
-            if ($lower === '1') return true;
-            if ($lower === '0') return false;
+            if ($lower === 'true')
+                return true;
+            if ($lower === 'false')
+                return false;
+            if ($lower === '1')
+                return true;
+            if ($lower === '0')
+                return false;
         }
         return $value;
     }
@@ -182,15 +187,26 @@ if (!function_exists('csrf_field')) {
 }
 
 /**
+ * CSRF Token (string only)
+ */
+if (!function_exists('csrf_token')) {
+    function csrf_token()
+    {
+        return $_SESSION['_token'] ?? '';
+    }
+}
+
+/**
  * Config Helper
  */
 if (!function_exists('config')) {
-    function config($key, $default = null) {
+    function config($key, $default = null)
+    {
         static $configs = [];
-        
+
         $segments = explode('.', $key);
         $file = $segments[0];
-        
+
         if (!isset($configs[$file])) {
             $configPath = __DIR__ . '/../../config/' . $file . '.php';
             if (file_exists($configPath)) {
@@ -199,10 +215,10 @@ if (!function_exists('config')) {
                 return $default;
             }
         }
-        
+
         $value = $configs[$file];
         array_shift($segments); // Remove the file name from segments
-        
+
         foreach ($segments as $segment) {
             if (is_array($value) && array_key_exists($segment, $value)) {
                 $value = $value[$segment];
@@ -210,7 +226,7 @@ if (!function_exists('config')) {
                 return $default;
             }
         }
-        
+
         return $value;
     }
 }
@@ -219,7 +235,8 @@ if (!function_exists('is_htmx_request')) {
     /**
      * Returns true if the request is an HTMX request.
      */
-    function is_htmx_request() {
+    function is_htmx_request()
+    {
         return isset($_SERVER['HTTP_HX_REQUEST']) && $_SERVER['HTTP_HX_REQUEST'] === 'true';
     }
 }
@@ -232,7 +249,8 @@ if (!function_exists('render_fragment_or_full')) {
      * @param string $layoutView The layout view (default: 'base')
      * @param string $blockName The block name in the layout to inject the fragment (default: 'content')
      */
-    function render_fragment_or_full($fragmentView, $data = [], $layoutView = 'layouts/base', $blockName = 'content') {
+    function render_fragment_or_full($fragmentView, $data = [], $layoutView = 'layouts/base', $blockName = 'content')
+    {
         $isPartial = is_htmx_request() || is_ajax_request();
         if ($isPartial) {
             echo view($fragmentView, $data, true);
