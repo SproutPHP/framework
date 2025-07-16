@@ -59,3 +59,4 @@ composer.lock
 # Application specific
 /public/uploads/
 /public/storage/
+/docs
