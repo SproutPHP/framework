@@ -32,8 +32,9 @@ class ValidationTestController
      */
     protected function getPrivateFiles()
     {
-        $privateDir = \Core\Support\Storage::path('', 'private');
+        $privateDir = Storage::path('', 'private');
         $privateFiles = [];
+
         if (is_dir($privateDir)) {
             foreach (scandir($privateDir) as $file) {
                 if ($file !== '.' && $file !== '..' && is_file($privateDir . '/' . $file)) {
@@ -140,8 +141,14 @@ class ValidationTestController
     /**
      * Securely download a private file
      */
-    public function downloadPrivateFile($filename)
+    public function downloadPrivateFile()
     {
+        $filename = isset($_GET['file']) ? urldecode($_GET['file']) : null;
+        if (!$filename) {
+            http_response_code(400);
+            echo 'Missing file parameter.';
+            exit;
+        }
         $privatePath = Storage::path($filename, 'private');
         if (!is_file($privatePath)) {
             http_response_code(404);

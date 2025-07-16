@@ -4,7 +4,7 @@
 		{% for file in privateFiles %}
 			<li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
 				<span>{{ file|e }}</span>
-				<a href="/validation-test/private-download/{{ file|url_encode }}" target="_blank">Download</a>
+				<a href="/validation-test/private-download?file={{ file|url_encode }}" target="_blank">Download</a>
 			</li>
 		{% endfor %}
 	</ul>

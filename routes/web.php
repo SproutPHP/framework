@@ -89,4 +89,4 @@ Route::get('/route-middleware-test', function () {
 Route::get('/validation-test', 'ValidationTestController@index');
 Route::post('/validation-test', 'ValidationTestController@handleForm');
 Route::post('/validation-test/private-upload', 'ValidationTestController@handlePrivateUpload');
-Route::get('/validation-test/private-download/{filename:.+}', 'ValidationTestController@downloadPrivateFile');
+Route::get('/validation-test/private-download', 'ValidationTestController@downloadPrivateFile');
