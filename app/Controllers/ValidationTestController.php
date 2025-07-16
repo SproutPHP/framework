@@ -18,7 +18,30 @@ class ValidationTestController
             ]);
         }
 
-        return view('validation-test', ['title' => 'ValidationTestController Index']);
+        // List private files for the right grid
+        $privateFiles = $this->getPrivateFiles();
+
+        return view('validation-test', [
+            'title' => 'ValidationTestController Index',
+            'privateFiles' => $privateFiles,
+        ]);
+    }
+
+    /**
+     * Helper to get private files list
+     */
+    protected function getPrivateFiles()
+    {
+        $privateDir = \Core\Support\Storage::path('', 'private');
+        $privateFiles = [];
+        if (is_dir($privateDir)) {
+            foreach (scandir($privateDir) as $file) {
+                if ($file !== '.' && $file !== '..' && is_file($privateDir . '/' . $file)) {
+                    $privateFiles[] = $file;
+                }
+            }
+        }
+        return $privateFiles;
     }
 
     public function handleForm()
@@ -69,5 +92,71 @@ class ValidationTestController
             'email' => $data['email'],
             'avatar_url' => isset($path) ? Storage::url($path) : null,
         ]);
+    }
+
+    /**
+     * Handle private file upload
+     */
+    public function handlePrivateUpload()
+    {
+        $request = Request::capture();
+        $error = null;
+        $path = null;
+        if ($request->hasFile('private_file')) {
+            $file = $request->file('private_file');
+            $path = Storage::put($file, '', 'private');
+            if (!$path) {
+                $error = 'Private file upload failed.';
+            }
+        } else {
+            $error = 'Please select a file to upload.';
+        }
+
+        // HTMX: return only the private files list fragment
+        if (isset($_SERVER['HTTP_HX_REQUEST']) && $_SERVER['HTTP_HX_REQUEST'] === 'true') {
+            $privateFiles = $this->getPrivateFiles();
+            return view('partials/private-files-list', [
+                'privateFiles' => $privateFiles,
+                'error' => $error,
+            ]);
+        }
+
+        // Fallback: redirect back
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit;
+    }
+
+    /**
+     * Render private files list fragment (for HTMX)
+     */
+    public function privateFilesListFragment()
+    {
+        $privateFiles = $this->getPrivateFiles();
+        return view('partials/private-files-list', [
+            'privateFiles' => $privateFiles,
+        ]);
+    }
+
+    /**
+     * Securely download a private file
+     */
+    public function downloadPrivateFile($filename)
+    {
+        $privatePath = Storage::path($filename, 'private');
+        if (!is_file($privatePath)) {
+            http_response_code(404);
+            echo 'File not found.';
+            exit;
+        }
+        // Set headers for download
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($privatePath));
+        readfile($privatePath);
+        exit;
     }
 }

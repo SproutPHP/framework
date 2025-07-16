@@ -1,9 +1,26 @@
 {% extends "layouts/base.twig" %}
-{% block title %}validation-test{% endblock %}
+{% block title %}validation-test
+{% endblock %}
 
 {% block content %}
-    <h1>Validation Test Form</h1>
-    <div id="form-container">
-        {% include "partials/validation-form.twig" %}
-    </div>
+	<h1>Validation Test Form</h1>
+	<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+		<div id="form-container">
+			{% include "partials/validation-form.twig" %}
+		</div>
+		<div id="private-upload-container" style="border-left: 1px solid #eee; padding-left: 2rem;">
+			<h2>Private File Upload</h2>
+			<form method="POST" action="/validation-test/private-upload" enctype="multipart/form-data" hx-post="/validation-test/private-upload" hx-target="#private-files-list" hx-swap="outerHTML">
+				{{ csrf_field()|raw }}
+				<div>
+					<label for="private_file">Select file:</label>
+					<input type="file" name="private_file" id="private_file" required/>
+				</div>
+				<button type="submit">Upload Private File</button>
+			</form>
+			<div id="private-files-list">
+				{% include "partials/private-files-list.twig" %}
+			</div>
+		</div>
+	</div>
 {% endblock %}
