@@ -58,3 +58,26 @@ These were single-shot development releases with no progressive alpha/beta cycle
 ---
 
 **From v0.1.7-alpha.2 onward, all releases will follow a structured, progressive SemVer pre-release cycle.**
+
+## [v0.1.7-beta.1] - 2024-06-09
+
+### Added
+- Dynamic route parameter support (e.g., `/user/{id}`, `/blog/{slug}`) for CRUD and flexible routing
+- Robust CSRF protection via middleware and helpers (works for forms, AJAX, and HTMX)
+- SPA-like file upload and form handling with HTMX (including indicators and grid UI)
+- Secure private file upload/download (no direct links, internal access only)
+- Consistent CSRF token management (single session key, helpers, and middleware)
+
+### Improved
+- UI/UX for validation and file upload forms (two-column grid, spinner, SPA feel)
+- Path resolution for storage (public/private separation, symlink support)
+- Code structure: CSRF logic moved to helpers/middleware, no raw PHP in entry
+
+### Fixed
+- Issues with file download on PHP built-in server (now uses query param for compatibility)
+- Consistency in CSRF token usage across the framework
+
+### Removed
+- Exposed raw CSRF logic from entry point
+
+---

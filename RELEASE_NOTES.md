@@ -1,31 +1,27 @@
-# SproutPHP v0.1.7-alpha.3 Release Notes
+# Release Notes: v0.1.7-beta.1 (2024-06-09)
 
-## 🎉 New Features & Improvements
+## Highlights
 
-- **Absolute Storage Path:** Storage root is now set to an absolute path by default for reliability; no need to set in .env for most use cases.
-- **Updated Storage Helper:** Improved documentation and usage for file uploads and URL generation.
-- **Symlink Command:** Enhanced for better cross-platform compatibility (Windows junctions, Linux/macOS symlinks).
-- **Documentation:** DOCS.md updated to reflect new storage system, usage, and best practices.
-- **Bugfix:** Prevented duplicate/nested storage paths in uploads.
-- **General Improvements:** Codebase and documentation refinements.
+- **First Beta Release!** SproutPHP is now feature-complete and ready for broader testing and feedback.
+- **Dynamic Routing:** Support for route parameters (e.g., `/user/{id}`, `/file/{filename:.+}`) enables full CRUD and flexible APIs.
+- **CSRF Protection:** Robust, middleware-based CSRF protection for all state-changing requests (forms, AJAX, HTMX).
+- **SPA-like UX:** HTMX-powered forms and file uploads for a modern, seamless user experience.
+- **Private File Handling:** Secure upload/download of private files, accessible only via internal methods.
+- **Cleaner Codebase:** All CSRF logic is now in helpers/middleware, not exposed in entry scripts.
 
-## 🛠️ Upgrade Guide
+## Upgrade Notes
 
-- Use the new absolute storage root (no .env override needed).
-- Run `php sprout symlink:create` to ensure correct symlink/junction for uploads.
-- See DOCS.md for updated usage and examples.
+- All CSRF tokens now use the `_csrf_token` session key. Update any custom code to use the new helpers.
+- File downloads now use a query parameter (`?file=...`) for compatibility with the PHP built-in server.
+- If you use custom routes, you can now use `{param}` and `{param:regex}` patterns.
 
-## 📅 Release Date
+## What's New
 
-2024-06-13
+- Two-column grid UI for validation and file upload forms
+- SPA feel with HTMX indicators and partial updates
+- Consistent and secure CSRF handling everywhere
+- Improved storage path resolution and symlink support
 
-## 📦 Framework Version
+## Thank You!
 
-v0.1.7-alpha.3
-
----
-
-**Release Date**: 2024-06-13  
-**Framework Version**: v0.1.7-alpha.3  
-**PHP Version**: 8.1+  
-**Composer**: 2.0+
+Thank you for testing and contributing to SproutPHP. Please report any issues or feedback as we move toward a stable release.
