@@ -1,44 +1,43 @@
 {% include "components/spinner.twig" %}
-<form 
-    hx-post="/validation-test" 
-    hx-target="#form-container" 
-    hx-swap="innerHTML"
-    hx-indicator="#spinner"
-    method="POST"
-    autocomplete="off"
-    enctype="multipart/form-data"
->
-    {# CSRF TOKEN #}
-    {{ csrf_field()|raw }}
-    <div>
-        <label for="name">Name:</label>
-        <input type="text" name="name" id="name" value="{{ old.name|e }}">
-        {% if errors.name %}
-            <div class="error" for="name" style="color: red;">{{ errors.name }}</div>
-        {% endif %}
-    </div>
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" value="{{ old.email|e }}">
-        {% if errors.email %}
-            <div class="error" for="email" style="color: red;">{{ errors.email }}</div>
-        {% endif %}
-    </div>
-    <div>
-      <label for="avatar">Avatar:</label>
-      <input type="file" name="avatar" id="avatar" accept="image/*" />
-      {% if errors.avatar %}
-        <div class="error" for="avatar" style="color: red;">{{ errors.avatar }}</div>
-      {% endif %}
-    </div>
-    <button type="submit">Submit
-    </button>
+<form
+	hx-post="/validation-test" hx-target="#form-container" hx-swap="innerHTML" hx-indicator="#spinner" method="POST" autocomplete="off" enctype="multipart/form-data" hx-trigger="submit delay:500ms">
+	{# CSRF TOKEN #}
+	{{ csrf_field()|raw }}
+	<div>
+		<label for="name">Name:</label>
+		<input type="text" name="name" id="name" value="{{ old.name|e }}">
+		{% if errors.name %}
+			<div class="error" for="name" style="color: red;">{{ errors.name }}</div>
+		{% endif %}
+	</div>
+	<div>
+		<label for="email">Email:</label>
+		<input type="email" name="email" id="email" value="{{ old.email|e }}">
+		{% if errors.email %}
+			<div class="error" for="email" style="color: red;">{{ errors.email }}</div>
+		{% endif %}
+	</div>
+	<div>
+		<label for="avatar">Avatar:</label>
+		<input type="file" name="avatar" id="avatar" accept="image/*"/>
+		{% if errors.avatar %}
+			<div class="error" for="avatar" style="color: red;">{{ errors.avatar }}</div>
+		{% endif %}
+	</div>
+	<button type="submit">Submit
+	</button>
 </form>
 <script>
-document.addEventListener('focusin', function(e) {
-  if (e.target.form && e.target.name) {
-    const error = e.target.form.querySelector(`.error[for="${e.target.name}"]`);
-    if (error) error.remove();
-  }
+	document.addEventListener('focusin', function (e) {
+if (e.target.form && e.target.name) {
+const error = e.target.form.querySelector(`.error[for="${
+e.target.name
+}"]`);
+if (error) 
+error.remove();
+
+
+
+}
 });
 </script>
