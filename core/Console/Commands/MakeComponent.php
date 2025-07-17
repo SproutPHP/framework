@@ -7,7 +7,7 @@ class MakeComponent
     public static function handle($name)
     {
         $name = strtolower(trim($name));
-        $dir = __DIR__ . '/../../../app/Views/Components/';
+        $dir = __DIR__ . '/../../../app/Views/components/';
         $file = "{$dir}/{$name}.twig";
 
         if (!is_dir($dir)) {
@@ -32,6 +32,6 @@ class MakeComponent
                 TWIG;
 
         file_put_contents($file, $template);
-        echo "✅ Component created: app/Components/{$name}.twig\n";
+        echo "✅ Component created: app/Views/components/{$name}.twig\n";
     }
 }

@@ -13,35 +13,92 @@ class View
 
     public static function init()
     {
-        $loader = new FilesystemLoader(__DIR__ . '/../../app/Views');
+        $viewsPath = __DIR__ . '/../../app/Views';
+        $loader = new FilesystemLoader($viewsPath);
+        
+        $twigConfig = config('view.twig', []);
+        
+        // Configure cache properly
+        $cacheEnv = $twigConfig['cache'] ?? false;
+        $cachePath = false; // Default to no cache
+        if ($cacheEnv) {
+            $cachePath = __DIR__ . '/../../storage/twig-cache';
+            if (!is_dir($cachePath)) {
+                mkdir($cachePath, 0777, true);
+            }
+        }
+        
         self::$twig = new Environment($loader, [
-            'cache' => false,
-            'debug' => true,
+            'cache' => $cachePath,
+            'debug' => $twigConfig['debug'] ?? true,
+            'auto_reload' => $twigConfig['auto_reload'] ?? true,
+            'strict_variables' => $twigConfig['strict_variables'] ?? false,
         ]);
 
-        // Register global functions like assets() debug() if it exists as Twig doesn’t have direct access to PHP global functions by default
-        if (function_exists('assets')) {
-            self::$twig->addFunction(new TwigFunction('assets', 'assets'));
+        // Register Twig DebugExtension if debug is enabled
+        if ($twigConfig['debug'] ?? false) {
+            self::$twig->addExtension(new \Twig\Extension\DebugExtension());
         }
 
-        if (function_exists('debug') || function_exists('dd') || function_exists('env')) {
-            self::$twig->addFunction(new \Twig\TwigFunction('debug', 'debug'));
-            self::$twig->addFunction(new \Twig\TwigFunction('dd', 'dd'));
-            self::$twig->addFunction(new \Twig\TwigFunction('env', fn($key) => env($key)));
+        // Register helpers for Twig: auto-register all from helpers.php, merge with config('view.twig_helpers') if set.
+        self::registerExplicitHelpers();
+    }
+    
+    /**
+     * Register helpers for Twig: auto-register all from helpers.php, merge with config('view.twig_helpers') if set.
+     */
+    private static function registerExplicitHelpers() {
+        // 1. Get all user-defined functions (auto-discover from helpers.php and any loaded helpers)
+        $userFunctions = get_defined_functions()['user'];
+
+        // 2. Get explicit list from config, if any
+        $configHelpers = config('view.twig_helpers', []);
+
+        // 3. Merge and deduplicate
+        $allHelpers = array_unique(array_merge($userFunctions, $configHelpers));
+
+        // 4. Register each helper if it exists
+        foreach ($allHelpers as $helper) {
+            if (function_exists($helper)) {
+                self::$twig->addFunction(new \Twig\TwigFunction($helper, $helper));
+            }
         }
     }
 
-    public static function render($template, $data = [])
+    public static function render($template, $data = [], $return = false)
     {
-        if (env('APP_DEBUG') === 'true') {
-            $data['debugbar'] = Debugbar::render();
-            $data['app_debug'] = true;
-        }
-        
         if (!self::$twig) {
             self::init();
         }
 
-        echo self::$twig->render($template . '.twig', $data);
+        // Check if this is an AJAX/HTMX request
+        if (Debugbar::isAjaxRequest() && config('app.debug', false)) {
+            // Reset debugbar for this request
+            Debugbar::resetForRequest();
+            
+            // Render the template first
+            $content = self::$twig->render($template . '.twig', $data);
+            
+            // Append debugbar to the response
+            $debugbar = Debugbar::render();
+            
+            if ($return) {
+                return $content . $debugbar;
+            }
+            echo $content . $debugbar;
+            return;
+        }
+
+        // Regular request handling
+        if (config('app.debug', false)) {
+            $data['debugbar'] = Debugbar::render();
+            $data['app_debug'] = true;
+        }
+
+        $output = self::$twig->render($template . '.twig', $data);
+        if ($return) {
+            return $output;
+        }
+        echo $output;
     }
 }

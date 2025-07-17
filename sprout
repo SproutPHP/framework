@@ -9,6 +9,9 @@ use Core\Console\Commands\MakeResource;
 use Core\Console\Commands\MakeRoute;
 use Core\Console\Commands\MakeView;
 use Core\Console\Commands\Migrate;
+use Core\Console\Commands\Build;
+use Core\Console\Commands\MakeMiddleware;
+use Core\Console\Commands\SymlinkCreate;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -79,6 +82,18 @@ switch ($command) {
         MakeComponent::handle($target);
         break;
 
+    case 'make:middleware':
+        if (!$target) {
+            echo "❌ Please provide a middleware name.\n";
+            exit(1);
+        }
+        MakeMiddleware::handle($target);
+        break;
+
+    case 'symlink:create':
+        SymlinkCreate::handle();
+        break;
+
     case 'env':
         $envValue = $target ?? null;
 
@@ -132,7 +147,8 @@ switch ($command) {
         break;
 
     case 'bloom':
-        echo "🌸 Preparing production build (coming soon)\n";
+        echo "\n🌸 SproutPHP Build: Preparing production build...\n";
+        Build::run();
         break;
 
     case 'version':
@@ -195,6 +211,10 @@ switch ($command) {
 
         break;
 
+    case 'install:pico':
+        \Core\Console\PostInstall::run();
+        break;
+
     case 'help':
     default:
         echo "🌿 SproutPHP CLI\n";
@@ -206,12 +226,14 @@ switch ($command) {
         echo "  php sprout make:resource    Auto-generate MVC resources including routes\n";
         echo "  php sprout make:route       Register routes for your particular controller\n";
         echo "  php sprout make:component   Make a component\n";
+        echo "  php sprout make:middleware  Make a middleware\n";
         echo "  php sprout env production   To switch to production|local\n";
         echo "  php sprout logs             Shows recent errors from logs\n";
         echo "  php sprout seed             Generate files (coming soon)\n";
         echo "  php sprout prune            Remove unwanted files (coming soon)\n";
-        echo "  php sprout bloom            Build for production (coming soon)\n";
+        echo "  php sprout bloom            Build for production (minifies, strips dev code, precompiles)\n";
         echo "  php sprout version          Show framework version\n";
         echo "  php sprout info             Show framework information\n";
+        echo "  php sprout install:pico     Update PicoCSS (choose build/theme)\n";
         break;
 }

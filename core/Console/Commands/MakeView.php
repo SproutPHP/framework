@@ -25,7 +25,7 @@ class MakeView
             {% extends 'layouts/base.twig' %}
 
             {% block content %}
-                <h2>HTMX Demo Page</h2>
+                <h2>HTMX Demo Page for $name</h2>
 
                 <button hx-get="/" hx-target="#demo" hx-swap="innerHTML">
                     Load Partial via HTMX
@@ -38,11 +38,11 @@ class MakeView
             TWIG
             : <<<TWIG
             {% extends "layouts/base.twig" %}
-            {% block title %}{{ title }}{% endblock %}
+            {% block title %}$name{% endblock %}
 
             {% block content %}
-            <h1>{{ title }}</h1>
-            <p>This is the <strong>{{ title }}</strong> page.</p>
+            <h1>$name</h1>
+            <p>This is the <strong>$name</strong> page.</p>
             <blockquote style="margin-top:2rem; font-style:italic; color:#888;">
                 {$quote}
             </blockquote>
