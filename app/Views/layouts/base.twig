@@ -213,6 +213,18 @@
 			background: var(--primary);
 			color: #fff;
 		}
+		.htmx-active {
+			z-index: 9999;
+			position: fixed;
+			bottom: 63px;
+			right: 10px;
+			background: #eef;
+			border: 1px solid #ccd;
+			padding: 0.5rem;
+			font-family: monospace;
+			font-size: 0.8rem;
+			border-radius: 4px;
+		}
 		#sprout-btn {
 			position: relative;
 			overflow: hidden;
@@ -373,7 +385,7 @@
 	</main>
 
 	{% if config('app.env', 'local') == 'local' %}
-		<div style="z-index:9999;position:fixed;bottom:75px;right:10px;background:#eef;border:1px solid #ccd;padding:0.5rem;font-family:monospace;font-size:0.8rem;border-radius:4px;">
+		<div class="htmx-active">
 			⚡ HTMX Active
 			<br/>
 			📃
