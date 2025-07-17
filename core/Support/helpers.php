@@ -133,26 +133,57 @@ if (!function_exists('getLatestRelease')) {
         $repo = config('app.repo', 'SproutPHP/framework');
         $userAgent = config('app.user_agent', 'sproutphp-app');
         $token = env('GITHUB_TOKEN');
+        $defaultVersion = 'latest';
         $url = "https://api.github.com/repos/$repo/releases";
-        $headers = "User-Agent: $userAgent\r\n";
-        if ($token) {
-            $headers .= "Authorization: token $token\r\n";
-        }
-        $opts = [
-            "http" => [
-                "header" => $headers
-            ]
-        ];
-        $context = stream_context_create($opts);
-        $json = @file_get_contents($url, false, $context);
-        $data = json_decode($json, true);
 
-        if (is_array($data) && count($data) > 0) {
-            $tag = $data[0]['tag_name'] ?? 'unknown';
-            $isPrerelease = $data[0]['prerelease'] ? ' (pre-release)' : '';
-            return $tag . $isPrerelease;
+        // Helper to fetch release info
+        $fetchRelease = function ($headers) use ($url) {
+            $opts = [
+                "http" => [
+                    "header" => $headers
+                ]
+            ];
+            $context = stream_context_create($opts);
+            $json = @file_get_contents($url, false, $context);
+            $httpCode = null;
+            if ($http_response_header ?? false) {
+                foreach ($http_response_header as $header) {
+                    if (preg_match('/HTTP\/\d\.\d\s+(\d+)/', $header, $matches)) {
+                        $httpCode = (int) $matches[1];
+                        break;
+                    }
+                }
+            }
+            return [$json, $httpCode];
+        };
+
+        // 1. Try with token if present
+        if ($token) {
+            $headers = "User-Agent: $userAgent\r\nAuthorization: token $token\r\n";
+            list($json, $httpCode) = $fetchRelease($headers);
+            if ($httpCode === 200) {
+                $data = json_decode($json, true);
+                if (is_array($data) && count($data) > 0) {
+                    $tag = $data[0]['tag_name'] ?? $defaultVersion;
+                    $isPrerelease = !empty($data[0]['prerelease']) ? ' (pre-release)' : '';
+                    return $tag . $isPrerelease;
+                }
+            }
+            // If unauthorized or rate-limited, fall through to unauthenticated
         }
-        return 'unknown';
+        // 2. Try unauthenticated
+        $headers = "User-Agent: $userAgent\r\n";
+        list($json, $httpCode) = $fetchRelease($headers);
+        if ($httpCode === 200) {
+            $data = json_decode($json, true);
+            if (is_array($data) && count($data) > 0) {
+                $tag = $data[0]['tag_name'] ?? $defaultVersion;
+                $isPrerelease = !empty($data[0]['prerelease']) ? ' (pre-release)' : '';
+                return $tag . $isPrerelease;
+            }
+        }
+        // 3. If all else fails, return default
+        return $defaultVersion;
     }
 }
 
