@@ -453,6 +453,40 @@ SproutPHP includes a built-in CORS middleware, registered globally by default bu
 
 - Only enable CORS for trusted origins in production. Use `*` for development only.
 
+## Content Security Policy (CSP) and External APIs/Images
+
+By default, SproutPHP sets a strict Content Security Policy (CSP) to maximize security:
+- Only resources from your own domain are allowed (default-src 'self').
+- No external APIs (AJAX/fetch) or images are permitted by default.
+
+### Allowing External APIs (connect-src)
+To allow your app to fetch data from external APIs (e.g., GitHub, third-party services), set the `CSP_CONNECT_SRC` variable in your `.env` file:
+
+```
+CSP_CONNECT_SRC=https://api.github.com,https://another.api.com
+```
+
+This will add the specified domains to the CSP `connect-src` directive, allowing JavaScript to make requests to those APIs.
+
+### Allowing External Images (img-src)
+To allow your app to load images from external sources (e.g., shields.io, Gravatar), set the `CSP_IMG_SRC` variable in your `.env` file:
+
+```
+CSP_IMG_SRC=https://img.shields.io,https://www.gravatar.com
+```
+
+This will add the specified domains to the CSP `img-src` directive, allowing images from those sources.
+
+### Why is CSP strict by default?
+- This prevents accidental data leaks and XSS attacks by only allowing resources from your own domain.
+- You must explicitly allow any external domains you trust for APIs or images.
+
+### Where is this configured?
+- See `config/security.php` for how these variables are loaded.
+- The CSP header is set in the `XssProtection` middleware.
+
+**Tip:** Only add domains you trust and actually use. Never use `*` in production for these settings.
+
 ## CLI Reference
 
 Run `php sprout` for all available commands, including:

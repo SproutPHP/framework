@@ -26,21 +26,41 @@ class XssProtection implements MiddlewareInterface
         $response = $next($request);
         return $response;
     }
-    
+
     private function getCspPolicy(): string
     {
         $env = config('app.env', 'local');
         $debug = config('app.debug', false);
-        
-        // Base CSP policy
         $basePolicy = "default-src 'self'; object-src 'none';";
-        
+
+        // Allow developers to specify connect-src for external APIs via .env (CSP_CONNECT_SRC)
+        $connectSrcDomains = config('security.csp.connect_src', []);
+        $connectSrc = '';
+        if (!empty($connectSrcDomains)) {
+            $connectSrc = " connect-src 'self'";
+            foreach ($connectSrcDomains as $domain) {
+                $connectSrc .= ' ' . $domain;
+            }
+            $connectSrc .= ';';
+        }
+
+        // Allow developers to specify img-src for external images via .env (CSP_IMG_SRC)
+        $imgSrcDomains = config('security.csp.img_src', []);
+        $imgSrc = '';
+        if (!empty($imgSrcDomains)) {
+            $imgSrc = " img-src 'self'";
+            foreach ($imgSrcDomains as $domain) {
+                $imgSrc .= ' ' . $domain;
+            }
+            $imgSrc .= ';';
+        }
+
         if ($env === 'local' || $debug) {
             // Development: relaxed policy
-            return $basePolicy . " script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://img.shields.io;";
+            return $basePolicy . " script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" . $imgSrc . $connectSrc;
         } else {
             // Production: strict policy
-            return $basePolicy . " script-src 'self'; style-src 'self'; img-src 'self';";
+            return $basePolicy . " script-src 'self'; style-src 'self';" . $imgSrc . $connectSrc;
         }
     }
 }

@@ -1,17 +1,28 @@
 {# SproutPHP Component: footer.twig #}
 <footer class="footer" style="margin-top:2rem; padding:1.5rem 0; border-top:1px solid #eee; text-align:center; font-size:0.95rem; color:#888;">
-    <div style="margin-bottom:0.5rem;">
-        {% if config('app.env') == 'local' or config('app.debug') %}
-            <a href="/security-test" hx-get="/security-test" hx-target="#main-content" hx-push-url="true">Security Test</a> |
-            <a href="/debug-config" hx-get="/debug-config" hx-target="#main-content" hx-push-url="true">Debug Config</a> |
-            <a href="/config-test" hx-get="/config-test" hx-target="#main-content" hx-push-url="true">Config Test</a> |
-            <a href="/envtest" hx-get="/envtest" hx-target="#main-content" hx-push-url="true">Env Test</a>
-        {% endif %}
-    </div>
-    <div>
-        SproutPHP {{ getLatestRelease() }} &mdash; <span style="text-transform:capitalize">{{ config('app.env', 'local') }}</span> environment
-    </div>
-    <div style="margin-top:0.5rem;">
-        &copy; {{ "now"|date("Y") }} <a href="https://github.com/yanikkumar" target="_blank">Yanik Kumar</a> &mdash; <a href="https://github.com/SproutPHP/framework" target="_blank">GitHub</a>
-    </div>
-</footer> 
+	<div style="margin-bottom:0.5rem;">
+		{% if config('app.env') == 'local' or config('app.debug') %}
+			<a href="/security-test" hx-get="/security-test" hx-target="#main-content" hx-push-url="true">Security Test</a>
+			|
+			<a href="/debug-config" hx-get="/debug-config" hx-target="#main-content" hx-push-url="true">Debug Config</a>
+			|
+			<a href="/config-test" hx-get="/config-test" hx-target="#main-content" hx-push-url="true">Config Test</a>
+			|
+			<a href="/envtest" hx-get="/envtest" hx-target="#main-content" hx-push-url="true">Env Test</a>
+		{% endif %}
+	</div>
+	<div class="footer-follow">
+		<span>Follow us:</span>
+		<a href="https://github.com/SproutPHP" target="_blank" rel="noopener" aria-label="GitHub">
+			<svg width="24" height="24" viewbox="0 0 24 24" fill="currentColor" style="vertical-align:middle;"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.339-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.686-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.699 1.028 1.593 1.028 2.686 0 3.847-2.338 4.695-4.566 4.944.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744 0 .267.18.579.688.481C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
+		</a>
+		<a href="https://twitter.com/SproutPHP" target="_blank" rel="noopener" aria-label="Twitter">
+			<svg width="24" height="24" viewbox="0 0 24 24" fill="currentColor" style="vertical-align:middle;"><path d="M17.53 2H21.5L14.36 10.09L22.75 22H15.97L10.98 15.18L5.29 22H1.32L8.87 13.36L1 2H7.97L12.54 8.22L17.53 2ZM16.32 20H18.34L7.75 3.97H5.59L16.32 20Z"/></svg>
+		</a>
+	</div>
+	<div style="margin-top: 0.5em; font-size: 0.98em; color: var(--muted)">
+		&copy;
+		{{ "now"|date("Y") }}
+		SproutPHP. All rights reserved.
+	</div>
+</footer>
