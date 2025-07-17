@@ -133,11 +133,16 @@ if (!function_exists('getLatestRelease')) {
         $repo = config('app.repo', 'SproutPHP/framework');
         $userAgent = config('app.user_agent', 'sproutphp-app');
         $token = env('GITHUB_TOKEN');
+        $defaultVersion = 'latest';
+
+        // Only attempt to fetch if token is present
+        if (!$token) {
+            return $defaultVersion;
+        }
+
         $url = "https://api.github.com/repos/$repo/releases";
         $headers = "User-Agent: $userAgent\r\n";
-        if ($token) {
-            $headers .= "Authorization: token $token\r\n";
-        }
+        $headers .= "Authorization: token $token\r\n";
         $opts = [
             "http" => [
                 "header" => $headers
@@ -145,14 +150,23 @@ if (!function_exists('getLatestRelease')) {
         ];
         $context = stream_context_create($opts);
         $json = @file_get_contents($url, false, $context);
-        $data = json_decode($json, true);
 
+        // Check for HTTP errors (e.g., 401 Unauthorized)
+        if ($http_response_header ?? false) {
+            foreach ($http_response_header as $header) {
+                if (stripos($header, '401 Unauthorized') !== false) {
+                    return $defaultVersion;
+                }
+            }
+        }
+
+        $data = json_decode($json, true);
         if (is_array($data) && count($data) > 0) {
-            $tag = $data[0]['tag_name'] ?? 'unknown';
+            $tag = $data[0]['tag_name'] ?? $defaultVersion;
             $isPrerelease = $data[0]['prerelease'] ? ' (pre-release)' : '';
             return $tag . $isPrerelease;
         }
-        return 'unknown';
+        return $defaultVersion;
     }
 }
 
