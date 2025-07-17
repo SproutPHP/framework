@@ -7,12 +7,12 @@
 	<div>
 		<img src="{{ assets('img/logo.png') }}" alt="SproutPHP Logo" class="main-logo"/>
 		<h1 class="main-title">{{ config('app.name', 'SproutPHP') }}</h1>
-		<div class="main-version">
+		<code class="main-version">
 			<span>{{ getLatestRelease }}</span>
 			&mdash;
 			<span style="text-transform:capitalize">{{ config('app.env', 'local') }}</span>
 			environment
-		</div>
+		</code>
 		<p class="main-desc">Welcome to
 			<strong>SproutPHP</strong>, the seed-to-plant minimal PHP framework 🌱<br>HTMX-ready, JS-optional, and developer-happy.</p>
 		<div class="main-links">
