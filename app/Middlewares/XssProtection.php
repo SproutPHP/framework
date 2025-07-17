@@ -60,6 +60,12 @@ class XssProtection implements MiddlewareInterface
             return $basePolicy . " script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" . $imgSrc . $connectSrc;
         } else {
             // Production: strict policy
+            if ($debug) {
+                // Optionally log a warning if debug is on in production
+                if (function_exists('log_error')) {
+                    log_error("[SproutPHP] WARNING: app.debug is true in production! CSP is strict, but debug mode should be off.");
+                }
+            }
             return $basePolicy . " script-src 'self'; style-src 'self';" . $imgSrc . $connectSrc;
         }
     }
