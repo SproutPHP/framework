@@ -1,41 +1,27 @@
 {# SproutPHP Component: navbar.twig #}
-<div class="component navbar">
+<header>
+	<div class="logo-row">
+		<img src="{{ assets('img/logo.png') }}" alt="SproutPHP Logo" class="logo-img"/>
+		<span class="brand">SproutPHP</span>
+	</div>
 	<nav>
-		<ul>
-			<li>
-				<a href="/" hx-boost="false" target="_self" style="text-decoration: none; color: #ffffff;">
-					<img src="{{ assets('img/logo.png') }}" alt="SproutPHP Logo" width="32" height="32" style="vertical-align:middle;"/>
-					<span style="font-weight:bold;font-size:1.2rem;vertical-align:middle;">SproutPHP</span>
-				</a>
-			</li>
-		</ul>
-		<ul>
-			<li>
-				<a href="https://github.com/SproutPHP/framework/blob/development/README.md">About</a>
-			</li>
-			<li>
-				<a href="https://github.com/SproutPHP/framework/blob/development/DOCS.md">Docs</a>
-			</li>
-			<li>
-				<a href="https://github.com/sponsors/yanikkumar"><img src="https://img.shields.io/badge/Sponsor%20Creator-%E2%9D%A4%EF%B8%8F-pink?logo=github-sponsors"/></a>
-			</li>
-			<li>
-				<a href="#"><img src="https://img.shields.io/github/stars/sproutphp/framework?style=social&link=https%3A%2F%2Fgithub.com%2FSproutPHP%2Fframework"/></a>
-			</li>
-			<li>
-				<button id="theme-toggle-btn" aria-label="Toggle dark/light mode" style="background:none;border:none;cursor:pointer;font-size:1.5rem;">
-					<span id="theme-icon">☀️</span>
-				</button>
-			</li>
-		</ul>
+		<a href="https://sproutphp.github.io/about.html" class="nav-link">About</a>
+		<a href="https://sproutphp.github.io/documentation/" class="nav-link">Docs</a>
+		<a href="https://github.com/sponsors/yanikkumar" class="sponsor-btn" target="_blank" rel="noopener">&#10084; Sponsor Creator</a>
+		<a href="https://github.com/SproutPHP/framework" class="stars-btn" target="_blank" rel="noopener">
+			<svg height="18" viewbox="0 0 16 16" fill="currentColor" style="vertical-align: middle">
+				<path d="M8 12.027l-3.717 2.21.711-4.15-3.02-2.944 4.166-.605L8 2.5l1.86 3.99 4.166.605-3.02 2.944.711 4.15z"></path>
+			</svg>
+			Stars
+			<span id="star-count">...</span>
+		</a>
+		<button class="toggle-btn" id="theme-toggle" title="Toggle dark/light mode">🌙</button>
 	</nav>
-	<hr/>
-</div>
-
+</header>
 <script>
 	(function () {
-const themeBtn = document.getElementById('theme-toggle-btn');
-const themeIcon = document.getElementById('theme-icon');
+const themeBtn = document.getElementById('theme-toggle');
+const themeIcon = themeBtn;
 const html = document.documentElement;
 if (! themeBtn || ! themeIcon) 
 return;
@@ -57,6 +43,21 @@ const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 html.setAttribute('data-theme', newTheme);
 localStorage.setItem('theme', newTheme);
 themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+});
+})();
+// Fetch GitHub star count and update #star-count
+(function () {
+const starCountSpan = document.getElementById('star-count');
+if (! starCountSpan) 
+return;
+
+
+
+fetch('https://api.github.com/repos/SproutPHP/framework').then(response => response.json()).then(data => {
+if (data.stargazers_count !== undefined) {
+starCountSpan.textContent = data.stargazers_count;
+}
+}).catch(() => { /* ignore errors, keep default */
 });
 })();
 </script>
