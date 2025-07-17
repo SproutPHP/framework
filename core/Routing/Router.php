@@ -104,7 +104,12 @@ class Router
             } elseif (isset(MiddlewareRegistry::$map[$mw])) {
                 $resolvedMiddleware[] = MiddlewareRegistry::$map[$mw];
             } else {
-                throw new \Exception("Unknown middleware: $mw");
+                $msg = "[SproutPHP] Middleware alias '$mw' is not registerd. Please check your routes or MiddlewareRegistry.";
+                if (function_exists('log_error')) {
+                    log_error($msg);
+                }
+
+                throw new \Exception("$msg");
             }
         }
 
