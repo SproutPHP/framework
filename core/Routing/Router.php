@@ -58,16 +58,28 @@ class Router
         if (isset($this->routes[$method])) {
             foreach ($this->routes[$method] as $pattern => $route) {
                 $paramNames = [];
-                $regex = preg_replace_callback('/\{([a-zA-Z0-9_]+)(:([^}]+))?\}/', function ($matches) use (&$paramNames) {
-                    $paramNames[] = $matches[1];
-                    if (isset($matches[3])) {
-                        return '(' . $matches[3] . ')'; // custom regex
+                $regex = preg_replace_callback('/\{([a-zA-Z0-9_]+)(\??)(?::([^}]+))?\}/', function ($matches) use (&$paramNames) {
+                    $name = $matches[1];
+                    $optional = $matches[2] === '?';
+                    $customRegex = isset($matches[3]) ? $matches[3] : null;
+                    $paramNames[] = $name;
+                    $pattern = $customRegex ?: '[^/]+';
+                    $segment = '(' . $pattern . ')';
+                    if ($optional) {
+                        // Make the preceding slash and parameter optional
+                        return '(?:/' + $segment + ')?';
+                    } else {
+                        return '/' + $segment;
                     }
-                    return '([^/]+)'; // default: match anything except /
                 }, $pattern);
-                $regex = '#^' . $regex . '$#';
+                // Allow for routes that end with optional params (trailing slash optional)
+                $regex = '#^' . rtrim($regex, '/') . '/?$#';
                 if (preg_match($regex, $uri, $matches)) {
                     array_shift($matches); // remove full match
+                    // Fill missing optional params with null
+                    while (count($matches) < count($paramNames)) {
+                        $matches[] = null;
+                    }
                     $params = array_combine($paramNames, $matches);
                     return $this->runRoute($route, $request, $params);
                 }
