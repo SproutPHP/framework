@@ -6,6 +6,10 @@ class ErrorHandler
 {
     public static function register()
     {
+        // Skip registering handlers in CLI or PHPUnit (for testing)
+        if (php_sapi_name() === 'cli' || getenv('PHPUNIT_RUNNING') || defined('PHPUNIT_COMPOSER_INSTALL')) {
+            return;
+        }
         ini_set('display_errors', 0); // Prevent raw output
         ini_set('log_errors', 1);
         error_reporting(E_ALL);
@@ -74,6 +78,9 @@ class ErrorHandler
             }
         }
 
-        exit;
+        // Only call exit for web requests, not for CLI
+        if (php_sapi_name() !== 'cli' && php_sapi_name() !== 'phpdbg') {
+            exit;
+        }
     }
 }

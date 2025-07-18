@@ -26,6 +26,15 @@ class View
             if (!is_dir($cachePath)) {
                 mkdir($cachePath, 0777, true);
             }
+
+            if (!is_writable($cachePath)) {
+                // Show a clear error and fallback to no cache
+                echo "<div style='padding:1rem; background:#fff3f3; color:#b30000; border:1px solid #ffb3b3; font-family:monospace;'>";
+                echo "<strong>SproutPHP Error:</strong> Twig cache directory <code>$cachePath</code> is not writable!<br>";
+                echo "Please check permissions or set <code>view.twig.cache</code> to <code>false</code> in your config.<br>";
+                echo "</div>";
+                $cachePath = false; // Fallback to no cache
+            }
         }
 
         self::$twig = new Environment($loader, [

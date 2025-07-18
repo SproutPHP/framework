@@ -57,7 +57,7 @@ server {
 }
 ```
 
-## [v0.1.7-beta.1] - 2024-06-09
+## [v0.1.7] - 2025-07-18
 
 ### New Features & Improvements
 
@@ -94,6 +94,26 @@ server {
 - **Twig** for templating
 - **CLI** for scaffolding and project management
 - **Error pages** and basic debug tools
+
+## Routing
+
+SproutPHP supports flexible route parameters (like most modern frameworks):
+
+| Pattern            | Matches | Example URI              | Notes                       |
+| ------------------ | ------- | ------------------------ | --------------------------- |
+| `/user/{id}`       | Yes     | `/user/123`              | `{id}` = 123                |
+| `/user/{id?}`      | Yes     | `/user/123`, `/user`     | `{id}` = 123 or null        |
+| `/file/{path:.+}`  | Yes     | `/file/foo/bar`          | `{path}` = foo/bar          |
+| `/file/{path?:.+}` | Yes     | `/file`, `/file/foo/bar` | `{path}` = foo/bar or null  |
+| `/blog/{slug}`     | Yes     | `/blog/hello-world`      | `{slug}` = hello-world      |
+| `/blog/{slug}`     | No      | `/blog/hello/world`      | `{slug}` does not match `/` |
+
+- <code>{param}</code> — required parameter (matches anything except <code>/</code>)
+- <code>{param?}</code> — optional parameter (trailing slash and parameter are optional)
+- <code>{param:regex}</code> — required with custom regex
+- <code>{param?:regex}</code> — optional with custom regex
+
+Optional parameters are passed as <code>null</code> if missing. For catch-all (wildcard) parameters, use a custom regex like <code>{path:.+}</code>.
 
 ## Example: Hello World Route
 
@@ -371,3 +391,36 @@ You do **not** need to install or include HTMX or PicoCSS yourself—they are al
 ```
 
 ```
+
+## Testing Your SproutPHP App
+
+SproutPHP is compatible with [PHPUnit](https://phpunit.de/) and other popular PHP testing tools.
+
+1. **Install PHPUnit (dev only):**
+   ```sh
+   composer require --dev phpunit/phpunit
+   ```
+2. **Create a `tests/` directory** in your project root.
+3. **Add a sample test:**
+
+   ```php
+   // tests/ExampleTest.php
+   use PHPUnit\Framework\TestCase;
+
+   class ExampleTest extends TestCase
+   {
+       public function testBasicAssertion()
+       {
+           $this->assertTrue(true);
+       }
+   }
+   ```
+
+4. **Run your tests:**
+   ```sh
+   ./vendor/bin/phpunit
+   ```
+
+You can test any part of your app: helpers, models, controllers, middleware, etc. Use mocks and stubs as needed.
+
+> **Note:** SproutPHP does not include test files by default. You are free to organize and write tests as you see fit for your project.

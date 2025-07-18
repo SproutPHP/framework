@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-This project uses [Semantic Versioning](https://semver.org/) beginning with version `v0.1.7-alpha.2` (or `v0.1.7-beta.1`).  
+This project uses [Semantic Versioning](https://semver.org/) beginning with version `v0.1.7-alpha.2` (or `v0.1.7`).  
 Earlier releases (`v0.1.0-alpha.1` to `v0.1.7-alpha.1`) were experimental and do not strictly follow SemVer conventions.
 
 ---
@@ -59,7 +59,7 @@ These were single-shot development releases with no progressive alpha/beta cycle
 
 **From v0.1.7-alpha.2 onward, all releases will follow a structured, progressive SemVer pre-release cycle.**
 
-## [v0.1.7-beta.1] - 2024-06-09
+## [v0.1.7] - 2025-07-18
 
 ### Added
 - Dynamic route parameter support (e.g., `/user/{id}`, `/blog/{slug}`) for CRUD and flexible routing
