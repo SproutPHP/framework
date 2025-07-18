@@ -57,7 +57,7 @@ server {
 }
 ```
 
-## [v0.1.7-beta.1] - 2024-06-09
+## [v0.1.7] - 2025-07-18
 
 ### New Features & Improvements
 
