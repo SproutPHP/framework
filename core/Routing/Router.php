@@ -48,15 +48,17 @@ class Router
         $method = $request->method;
         $uri = $request->uri;
 
+        $uri = ltrim($uri, '/');
         // Try exact match first
-        if (isset($this->routes[$method][$uri])) {
-            $route = $this->routes[$method][$uri];
+        if (isset($this->routes[$method]['/' . $uri])) {
+            $route = $this->routes[$method]['/' . $uri];
             return $this->runRoute($route, $request);
         }
 
         // Try pattern match for dynamic parameters
         if (isset($this->routes[$method])) {
             foreach ($this->routes[$method] as $pattern => $route) {
+                $normalizedPattern = ltrim($pattern, '/');
                 $paramNames = [];
                 $regex = preg_replace_callback('/\{([a-zA-Z0-9_]+)(\??)(?::([^}]+))?\}/', function ($matches) use (&$paramNames) {
                     $name = $matches[1];
@@ -66,15 +68,25 @@ class Router
                     $pattern = $customRegex ?: '[^/]+';
                     $segment = '(' . $pattern . ')';
                     if ($optional) {
-                        // Make the preceding slash and parameter optional
-                        return '(?:/' + $segment + ')?';
+                        // Make the parameter optional (no extra slash)
+                        return '(?:' . $segment . ')?';
                     } else {
-                        return '/' + $segment;
+                        return $segment;
                     }
-                }, $pattern);
+                }, '/' . $normalizedPattern);
                 // Allow for routes that end with optional params (trailing slash optional)
                 $regex = '#^' . rtrim($regex, '/') . '/?$#';
-                if (preg_match($regex, $uri, $matches)) {
+                if ($pattern === '/test/{name}') {
+                    $result = preg_match($regex, '/' . $uri, $matches);
+                    // dd([
+                    //     'pattern' => $pattern,
+                    //     'regex' => $regex,
+                    //     'uri' => '/' . $uri,
+                    //     'preg_match_result' => $result,
+                    //     'matches' => $matches ?? []
+                    // ]);
+                }
+                if (preg_match($regex, '/' . $uri, $matches)) {
                     array_shift($matches); // remove full match
                     // Fill missing optional params with null
                     while (count($matches) < count($paramNames)) {
@@ -84,6 +96,7 @@ class Router
                     return $this->runRoute($route, $request, $params);
                 }
             }
+            // dd(array_keys($this->routes[$method]));
         }
 
         // No match found
