@@ -391,3 +391,36 @@ You do **not** need to install or include HTMX or PicoCSS yourself—they are al
 ```
 
 ```
+
+## Testing Your SproutPHP App
+
+SproutPHP is compatible with [PHPUnit](https://phpunit.de/) and other popular PHP testing tools.
+
+1. **Install PHPUnit (dev only):**
+   ```sh
+   composer require --dev phpunit/phpunit
+   ```
+2. **Create a `tests/` directory** in your project root.
+3. **Add a sample test:**
+
+   ```php
+   // tests/ExampleTest.php
+   use PHPUnit\Framework\TestCase;
+
+   class ExampleTest extends TestCase
+   {
+       public function testBasicAssertion()
+       {
+           $this->assertTrue(true);
+       }
+   }
+   ```
+
+4. **Run your tests:**
+   ```sh
+   ./vendor/bin/phpunit
+   ```
+
+You can test any part of your app: helpers, models, controllers, middleware, etc. Use mocks and stubs as needed.
+
+> **Note:** SproutPHP does not include test files by default. You are free to organize and write tests as you see fit for your project.
