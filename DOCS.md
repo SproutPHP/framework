@@ -95,6 +95,26 @@ server {
 - **CLI** for scaffolding and project management
 - **Error pages** and basic debug tools
 
+## Routing
+
+SproutPHP supports flexible route parameters (like most modern frameworks):
+
+| Pattern            | Matches | Example URI              | Notes                       |
+| ------------------ | ------- | ------------------------ | --------------------------- |
+| `/user/{id}`       | Yes     | `/user/123`              | `{id}` = 123                |
+| `/user/{id?}`      | Yes     | `/user/123`, `/user`     | `{id}` = 123 or null        |
+| `/file/{path:.+}`  | Yes     | `/file/foo/bar`          | `{path}` = foo/bar          |
+| `/file/{path?:.+}` | Yes     | `/file`, `/file/foo/bar` | `{path}` = foo/bar or null  |
+| `/blog/{slug}`     | Yes     | `/blog/hello-world`      | `{slug}` = hello-world      |
+| `/blog/{slug}`     | No      | `/blog/hello/world`      | `{slug}` does not match `/` |
+
+- <code>{param}</code> — required parameter (matches anything except <code>/</code>)
+- <code>{param?}</code> — optional parameter (trailing slash and parameter are optional)
+- <code>{param:regex}</code> — required with custom regex
+- <code>{param?:regex}</code> — optional with custom regex
+
+Optional parameters are passed as <code>null</code> if missing. For catch-all (wildcard) parameters, use a custom regex like <code>{path:.+}</code>.
+
 ## Example: Hello World Route
 
 ```php
