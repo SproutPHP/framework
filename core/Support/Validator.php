@@ -392,4 +392,22 @@ class Validator
             $this->errors[$field] = "The $field must be a valid image.";
         }
     }
+
+    /**
+     * File Size: File must not exceed given size in KB
+     * Usage: 'avatar' => 'file_size:2048' (max 2MB)
+     */
+    protected function validateFile_size($field, $param)
+    {
+        $maxKb = (int) $param;
+        $file = $_FILES[$field] ?? null;
+        if (!$file || !is_uploaded_file($file['tmp_name'])) {
+            $this->errors[$field] = "The $field must be a file.";
+            return;
+        }
+        $sizeKb = (int) ($file['size'] / 1024);
+        if ($sizeKb > $maxKb) {
+            $this->errors[$field] = "The $field must not be greater than $maxKb KB.";
+        }
+    }
 }

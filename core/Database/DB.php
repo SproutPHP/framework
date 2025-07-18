@@ -12,13 +12,14 @@ class DB
 
     public static function connection()
     {
-        if (self::$pdo) return self::$pdo;
+        if (self::$pdo)
+            return self::$pdo;
 
         $connection = config('database.default', 'mysql');
         $config = config("database.connections.$connection");
-        
+
         if (!$config) {
-            die("❌ Database connection '$connection' not found in config.");
+            throw new \RuntimeException("❌ Database connection '$connection' not found in config.");
         }
 
         $host = $config['host'] ?? 'localhost';
@@ -27,7 +28,7 @@ class DB
         $username = $config['username'] ?? 'root';
         $password = $config['password'] ?? '';
         $charset = $config['charset'] ?? 'utf8mb4';
-        
+
         $dsn = "mysql:host=$host;port=$port;dbname=$database;charset=$charset";
 
         try {
@@ -35,7 +36,7 @@ class DB
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return self::$pdo;
         } catch (PDOException $ex) {
-            die("❌ DB Connection failed: " . $ex->getMessage());
+            throw new \RuntimeException("❌ DB Connection failed: " . $ex->getMessage(), 0, $ex);
         }
     }
 
