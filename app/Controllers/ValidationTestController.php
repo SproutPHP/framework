@@ -62,7 +62,7 @@ class ValidationTestController
         $validator = new Validator($data, [
             'email' => 'required|email',
             'name' => 'required|min:3',
-            'avatar' => 'image|mimes:jpg,jpeg,png,gif',
+            'avatar' => 'image|mimes:jpg,jpeg,png,gif|file_size:2048',
         ]);
 
         // File Upload Validation
