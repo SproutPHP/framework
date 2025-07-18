@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Core\Console\Commands\EnvCheck;
 use Core\Console\Commands\MakeComponent;
 use Core\Console\Commands\MakeController;
 use Core\Console\Commands\MakeMigration;
@@ -92,6 +93,10 @@ switch ($command) {
 
     case 'symlink:create':
         SymlinkCreate::handle();
+        break;
+
+    case 'env:check':
+        EnvCheck::handle();
         break;
 
     case 'env':
