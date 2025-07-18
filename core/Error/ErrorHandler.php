@@ -60,7 +60,18 @@ class ErrorHandler
                 ? "errors/{$code}"
                 : "errors/error"; // fallback
 
-            echo \Core\View\View::render($viewFile, ['error_id' => $errorId]);
+            try {
+                echo \Core\View\View::render($viewFile, ['error_id' => $errorId]);
+            } catch (\Throwable $ex) {
+                echo "<div style='padding:1.5rem; font-family:monospace; background:#fff3f3; border:1px solid #ffb3b3; color:#b30000;'>";
+                echo "<h2>SproutPHP Error</h2>";
+                echo "<strong>Sorry, an error occurred and no error view could be loaded.</strong><br>";
+                echo "Error code: $code<br>";
+                if ($errorId) {
+                    echo "Error ID: $errorId<br>";
+                }
+                echo "</div>";
+            }
         }
 
         exit;
