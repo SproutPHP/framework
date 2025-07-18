@@ -3,13 +3,33 @@
 	<head>
 		<title>Error</title>
 		<link rel="stylesheet" href="{{ assets('css/sprout.min.css') }}">
+		<style>
+			body {
+				display: grid;
+				place-items: center;
+				height: 100vh;
+				text-align: center;
+				padding: 2rem;
+			}
+			h1 {
+				font-size: 3rem;
+				margin-bottom: 0.5rem;
+			}
+			p {
+				font-size: 1.2rem;
+				color: #666;
+			}
+		</style>
+	</head>
 	</head>
 	<body style="text-align: center; padding: 3rem;">
-		<h1>🪵 Oops!</h1>
-		<p>Something went wrong. Please try again later.</p>
-		{% if error_id %}
-			<small style="display:block; margin-top: 2rem;">Error ID:
-				{{ error_id }}</small>
-		{% endif %}
+		<main>
+			<h1>🪵 Oops!</h1>
+			<p>Something went wrong. Please try again later.</p>
+			{% if error_id %}
+				<small style="display:block; margin-top: 2rem;">Error ID:
+					{{ error_id }}</small>
+			{% endif %}
+		</main>
 	</body>
 </html>

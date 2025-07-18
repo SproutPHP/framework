@@ -1,8 +1,8 @@
-# Release Notes: v0.1.7-beta.1 (2024-06-09)
+# Release Notes: v0.1.7 (2025-07-18)
 
 ## Highlights
 
-- **First Beta Release!** SproutPHP is now feature-complete and ready for broader testing and feedback.
+- **First Stable Release!** SproutPHP is now production-ready, stable, and suitable for real-world projects.
 - **Dynamic Routing:** Support for route parameters (e.g., `/user/{id}`, `/file/{filename:.+}`) enables full CRUD and flexible APIs.
 - **CSRF Protection:** Robust, middleware-based CSRF protection for all state-changing requests (forms, AJAX, HTMX).
 - **SPA-like UX:** HTMX-powered forms and file uploads for a modern, seamless user experience.

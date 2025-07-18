@@ -13,10 +13,22 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
- * Starting the session after autoload
+ * Setting the session path and starting the session after autoload
  */
+$sessionConfig = config('app.session', []);
+$sessionDriver = $sessionConfig['driver'] ?? 'file';
+
+if ($sessionDriver === 'file') {
+    $sessionPath = $sessionConfig['path'] ?? '/storage/sessions';
+    $fullSessionPath = realpath(__DIR__ . '/../') . $sessionPath;
+    if (!is_dir($fullSessionPath)) {
+        mkdir($fullSessionPath, 0777, true);
+    }
+    session_save_path($fullSessionPath);
+}
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_name(config('app.session.name', 'sprout_session'));
+    session_name($sessionConfig['name'] ?? 'sprout_session');
     session_start();
 }
 

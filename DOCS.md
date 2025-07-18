@@ -1,6 +1,63 @@
 # SproutPHP Documentation
 
-## [v0.1.7-beta.1] - 2024-06-09
+> ⚠️ **Security Warning:**
+>
+> For security, you **must** set your web server's document root to the `public/` directory only. Never expose the project root or any directory above `public/` to the web. If misconfigured, sensitive files (like `.env`, `storage/`, `config/`, etc.) could be publicly accessible and compromise your application.
+>
+> See [Server Configuration](#server-configuration-apache--nginx) for deployment details.
+
+## Server Configuration (Apache & Nginx)
+
+### Apache (.htaccess)
+
+```apache
+# Place this in your project root (not public/)
+# Redirect all requests to public/
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ /public/$1 [L]
+
+# Deny access to sensitive files everywhere
+<FilesMatch "^(\.env|\.git|composer\.(json|lock)|config\.php)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+```
+
+### Nginx
+
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+
+    # Set the root to the public directory
+    root /path/to/your/project/public;
+
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # Deny access to sensitive files
+    location ~ /\.(env|git|htaccess) {
+        deny all;
+    }
+    location ~* /(composer\.json|composer\.lock|config\.php) {
+        deny all;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
+```
+
+## [v0.1.7] - 2025-07-18
 
 ### New Features & Improvements
 
@@ -37,6 +94,26 @@
 - **Twig** for templating
 - **CLI** for scaffolding and project management
 - **Error pages** and basic debug tools
+
+## Routing
+
+SproutPHP supports flexible route parameters (like most modern frameworks):
+
+| Pattern            | Matches | Example URI              | Notes                       |
+| ------------------ | ------- | ------------------------ | --------------------------- |
+| `/user/{id}`       | Yes     | `/user/123`              | `{id}` = 123                |
+| `/user/{id?}`      | Yes     | `/user/123`, `/user`     | `{id}` = 123 or null        |
+| `/file/{path:.+}`  | Yes     | `/file/foo/bar`          | `{path}` = foo/bar          |
+| `/file/{path?:.+}` | Yes     | `/file`, `/file/foo/bar` | `{path}` = foo/bar or null  |
+| `/blog/{slug}`     | Yes     | `/blog/hello-world`      | `{slug}` = hello-world      |
+| `/blog/{slug}`     | No      | `/blog/hello/world`      | `{slug}` does not match `/` |
+
+- <code>{param}</code> — required parameter (matches anything except <code>/</code>)
+- <code>{param?}</code> — optional parameter (trailing slash and parameter are optional)
+- <code>{param:regex}</code> — required with custom regex
+- <code>{param?:regex}</code> — optional with custom regex
+
+Optional parameters are passed as <code>null</code> if missing. For catch-all (wildcard) parameters, use a custom regex like <code>{path:.+}</code>.
 
 ## Example: Hello World Route
 
@@ -311,395 +388,39 @@ Add this script (in your layout or navbar):
 
 You do **not** need to install or include HTMX or PicoCSS yourself—they are already downloaded and loaded in your base template:
 
-```html
-<link rel="stylesheet" href="{{ assets('css/sprout.min.css') }}" />
-<script src="{{ assets('js/sprout.min.js') }}"></script>
 ```
 
-## Twig Helper Functions
+```
 
-SproutPHP uses a **hybrid system** for making PHP helper functions available in your Twig templates:
+## Testing Your SproutPHP App
 
-- **Automatic Registration:** All user-defined functions in `core/Support/helpers.php` are automatically registered as Twig helpers. Just add your function to `helpers.php` and it will be available in your Twig views.
-- **Explicit Registration (Optional):** You can also explicitly list additional helpers in the `twig_helpers` array in `config/view.php`. This is useful if you want to expose helpers from other files or override the default set.
-- **Both lists are merged and deduplicated.**
+SproutPHP is compatible with [PHPUnit](https://phpunit.de/) and other popular PHP testing tools.
 
-### Usage
-
-1. **Add a helper to `helpers.php`:**
+1. **Install PHPUnit (dev only):**
+   ```sh
+   composer require --dev phpunit/phpunit
+   ```
+2. **Create a `tests/` directory** in your project root.
+3. **Add a sample test:**
 
    ```php
-   // core/Support/helpers.php
-   if (!function_exists('my_custom_helper')) {
-       function my_custom_helper($arg) {
-           return strtoupper($arg);
+   // tests/ExampleTest.php
+   use PHPUnit\Framework\TestCase;
+
+   class ExampleTest extends TestCase
+   {
+       public function testBasicAssertion()
+       {
+           $this->assertTrue(true);
        }
    }
    ```
 
-   Now you can use it in Twig:
-
-   ```twig
-   {{ my_custom_helper('hello') }}
+4. **Run your tests:**
+   ```sh
+   ./vendor/bin/phpunit
    ```
 
-2. **(Optional) Add a helper to config:**
-   ```php
-   // config/view.php
-   'twig_helpers' => [
-       'my_other_helper',
-   ],
-   ```
+You can test any part of your app: helpers, models, controllers, middleware, etc. Use mocks and stubs as needed.
 
-### How it works
-
-- All helpers in `helpers.php` are auto-registered.
-- Any helpers listed in `twig_helpers` are also registered (even if not in `helpers.php`).
-- If a helper exists in both, it is only registered once.
-
-**This means most of the time, you just add your helper to `helpers.php` and it works in Twig!**
-
-### Note on the `view()` Helper
-
-- The `view()` helper now supports a third parameter `$return` (default: `false`).
-- If `$return` is `true`, it returns the rendered string instead of echoing it. This is used by the generic fragment helper to inject fragments into layouts.
-
-## HTMX/AJAX Fragment Rendering: Two Approaches
-
-SproutPHP supports two ways to handle routes that should return either a fragment (for HTMX/AJAX) or a full page (for normal requests):
-
-### 1. Generic Helper (Recommended)
-
-Use the `render_fragment_or_full` helper in your route. This will automatically detect if the request is HTMX/AJAX and return just the fragment, or wrap it in your layout for normal requests.
-
-By default, the fragment is injected into the `content` block of `layouts/base.twig`, so direct URL access always returns a full, styled page (navbar, footer, etc.).
-
-```php
-Route::get('/my-fragment', function () {
-    $data = [/* ... */];
-    render_fragment_or_full('partials/my-fragment', $data); // uses layouts/base.twig by default
-});
-```
-
-- **Best for most use cases.**
-- Keeps your code DRY and consistent.
-- Ensures direct URL access always returns a full page.
-- You can customize the layout or block by passing additional arguments to the helper.
-- **Note:** The default layout path is `layouts/base` (not just `base`).
-
-### 2. Manual Fragment Detection (Advanced)
-
-You can manually check for HTMX/AJAX requests and echo the fragment or full layout as needed:
-
-```php
-Route::get('/my-fragment', function () {
-    $data = [/* ... */];
-    if (is_htmx_request() || is_ajax_request()) {
-        echo view('partials/my-fragment', $data);
-    } else {
-        echo view('home', ['main_content' => view('partials/my-fragment', $data, true)]);
-    }
-});
-```
-
-- **Use when you need custom logic per route.**
-- Useful for advanced scenarios or when you want to handle fragments differently.
-
-**Tip:** For most routes, use the generic helper. Use the manual method only if you need special handling.
-
-## Preventing HTMX from Handling Certain Links
-
-Sometimes you want a link to always trigger a full page reload (for example, your home link to "/"), rather than being handled by HTMX as a fragment swap. To do this, use one of the following approaches:
-
-- Add `hx-boost="false"` to the `<a>` tag:
-  ```html
-  <a href="/" hx-boost="false">Home</a>
-  ```
-- Or, add `target="_self"`:
-  ```html
-  <a href="/" target="_self">Home</a>
-  ```
-- Or, add `rel="external"`:
-  ```html
-  <a href="/" rel="external">Home</a>
-  ```
-
-**Best Practice:**
-
-- Use these attributes for any link that should always reload the full page, such as your site home or links to external sites.
-- This prevents issues where the page loses its CSS/JS context due to HTMX fragment swaps.
-
-## CORS Middleware
-
-SproutPHP includes a built-in CORS middleware, registered globally by default but disabled in config/security.php:
-
-- To enable CORS, set `'enabled' => true` in the `'cors'` section of `config/security.php` or set `CORS_ENABLED=true` in your `.env` file.
-- Configure allowed origins, methods, and headers in the same config file or via environment variables.
-- The middleware will automatically set the appropriate CORS headers and handle preflight (OPTIONS) requests.
-- By default, CORS is **disabled** for security. Enable only if you need cross-origin requests (e.g., for APIs or frontend apps).
-
-**Example config/security.php:**
-
-```php
-'cors' => [
-    'enabled' => env('CORS_ENABLED', false),
-    'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', '*')),
-    'allowed_methods' => explode(',', env('CORS_ALLOWED_METHODS', 'GET,POST,PUT,DELETE')),
-    'allowed_headers' => explode(',', env('CORS_ALLOWED_HEADERS', 'Content-Type,Authorization')),
-],
-```
-
-**Security Note:**
-
-- Only enable CORS for trusted origins in production. Use `*` for development only.
-
-## Content Security Policy (CSP) and External APIs/Images
-
-By default, SproutPHP sets a strict Content Security Policy (CSP) to maximize security:
-- Only resources from your own domain are allowed (default-src 'self').
-- No external APIs (AJAX/fetch) or images are permitted by default.
-
-### Allowing External APIs (connect-src)
-To allow your app to fetch data from external APIs (e.g., GitHub, third-party services), set the `CSP_CONNECT_SRC` variable in your `.env` file:
-
-```
-CSP_CONNECT_SRC=https://api.github.com,https://another.api.com
-```
-
-This will add the specified domains to the CSP `connect-src` directive, allowing JavaScript to make requests to those APIs.
-
-### Allowing External Images (img-src)
-To allow your app to load images from external sources (e.g., shields.io, Gravatar), set the `CSP_IMG_SRC` variable in your `.env` file:
-
-```
-CSP_IMG_SRC=https://img.shields.io,https://www.gravatar.com
-```
-
-This will add the specified domains to the CSP `img-src` directive, allowing images from those sources.
-
-### Why is CSP strict by default?
-- This prevents accidental data leaks and XSS attacks by only allowing resources from your own domain.
-- You must explicitly allow any external domains you trust for APIs or images.
-
-### Where is this configured?
-- See `config/security.php` for how these variables are loaded.
-- The CSP header is set in the `XssProtection` middleware.
-
-**Tip:** Only add domains you trust and actually use. Never use `*` in production for these settings.
-
-## CLI Reference
-
-Run `php sprout` for all available commands, including:
-
-- `grow` — Start local dev server
-- `make:controller`, `make:model`, `make:view`, `make:route`, `make:component`, `make:migration`, `migrate`, etc.
-- `env` — Set environment
-- `logs` — View error logs
-- `info` — Show framework info
-
-## 🌿 Contributing & Future Growth
-
-SproutPHP is a living, growing project—just like its name! Contributions, ideas, and feedback are welcome. Here’s how you can help this sprout grow:
-
-1. **Fork the repo and clone it locally**
-2. **Create a new branch** for your feature or fix
-3. **Make your changes** (keep them minimal and in line with the project philosophy)
-4. **Submit a pull request**
-5. **Discuss and improve** with the community
-
-## PicoCSS Installer (Post-Install Script)
-
-SproutPHP includes a post-install script that lets you choose your preferred PicoCSS build right after running `composer install`.
-
-### How it Works
-
-- After installing dependencies, you'll be prompted to select a PicoCSS build: 0. Default Sprout Layout (Minimal PicoCSS) — just press Enter or choose 0 for the default
-  1. Minimal (Standard)
-  2. Classless
-  3. Conditional
-  4. Fluid Classless
-  5. Color Theme (choose a color)
-  6. Classless + Color Theme
-  7. Conditional + Color Theme
-  8. Fluid + Classless + Conditional + Color Theme
-  9. Color Palette Only
-- If you choose a color theme, you'll be prompted for the color (amber, blue, cyan, fuchsia, green, grey, indigo, jade, lime, orange, pink, pumpkin, purple, red, sand, slate, violet, yellow, zinc).
-- You'll also be asked if you want the minified version (recommended for production).
-- The script will download the latest PicoCSS file from the CDN and save it as `public/assets/css/sprout.min.css`.
-
-### Use Cases
-
-| Use Case                               | Choose This Option                       |
-| -------------------------------------- | ---------------------------------------- |
-| Default Sprout layout, minimal PicoCSS | 0 (or press Enter)                       |
-| Simple blog, no layout classes         | Classless                                |
-| Full control, grid, utilities          | Minimal (Standard)                       |
-| Themed look + classless                | Classless + Color Theme                  |
-| Toggle light/dark with JS              | Conditional or Conditional + Color Theme |
-| Full-width layout, no classes          | Fluid Classless                          |
-| Define your own classes                | Color Palette Only                       |
-
-### Changing PicoCSS Later
-
-- You can re-run the post-install script at any time:
-  ```bash
-  php core/Console/PostInstall.php
-  ```
-- Or, use the CLI command to update PicoCSS interactively:
-  ```bash
-  php sprout install:pico
-  ```
-- Or, manually download your preferred PicoCSS file from [jsdelivr PicoCSS CDN](https://cdn.jsdelivr.net/npm/@picocss/pico@latest/css/) and place it in `public/assets/css/sprout.min.css`.
-
-### Advanced
-
-- All PicoCSS builds and color themes are available. See the [PicoCSS documentation](https://picocss.com/docs/) for more details on each build type and theme.
-
-## Production Build (bloom Command)
-
-To prepare your SproutPHP app for production, use the `bloom` command:
-
-```bash
-php sprout bloom
-```
-
-This will run the production build process (minifies, strips dev code, precompiles, etc.).
-
-- The old `build` command is now replaced by `bloom` for clarity and branding.
-- Use this command before deploying your app to production.
-
-## File Upload & Storage (v0.1.7+)
-
-SproutPHP now includes a robust Storage helper for file uploads and URL generation, saving files in `storage/app/public` for web accessibility via a symlink.
-
-### Usage Example
-
-```php
-use Core\Support\Storage;
-
-// In your controller
-if ($request->hasFile('avatar')) {
-    $path = Storage::put($request->file('avatar'), 'avatars');
-    $url = Storage::url($path); // /storage/avatars/filename.jpg
-}
-```
-
-- Files are saved in `storage/app/public/{subdir}`.
-- URLs are generated as `/storage/{subdir}/{filename}`.
-- The `public/storage` directory is a symlink (or junction on Windows) to `storage/app/public`.
-
-### Storage Configuration
-
-In `config/storage.php`:
-
-```php
-'public' => [
-    'root' => env('STORAGE_PUBLIC_ROOT', 'storage/app/public'),
-    'url' => env('STORAGE_PUBLIC_LINK', '/storage'),
-    'visibility' => 'public',
-],
-```
-
-### Creating the Symlink
-
-To make uploaded files accessible via the web, create a symlink:
-
-```bash
-php sprout symlink:create
-```
-
-- This links `public/storage` to `storage/app/public`.
-- On Windows, a directory junction is created for compatibility.
-
-### Folder Structure
-
-```
-project-root/
-├── public/
-│   ├── assets/
-│   ├── index.php
-│   └── storage/  # symlink → ../storage/app/public
-├── storage/
-│   └── app/
-│       └── public/
-│           └── avatars/
-│               └── uploadedfile.jpg
-```
-
-### Accessing Uploaded Files
-
-- After upload, files are accessible at `/storage/avatars/filename.jpg`.
-- The `Storage::url($path)` helper generates the correct public URL.
-
-### Example Controller Snippet
-
-```php
-if ($request->hasFile('avatar')) {
-    $file = $request->file('avatar');
-    $path = Storage::put($file, 'avatars');
-    $avatarUrl = Storage::url($path); // Use in your views
-}
-```
-
-### Notes
-
-- Always use the `Storage` helper for uploads and URLs.
-- The storage root is now absolute for reliability.
-- No need to set or override the storage root in `.env` unless you have a custom setup.
-- The CLI symlink command ensures public access to uploaded files.
-
-## HTMX File Upload with
-
-You can use your main form for file upload:
-
-```twig
-<form
-    id="validation-form"
-    hx-post="/validation-test"
-    hx-target="#form-container"
-    hx-swap="innerHTML"
-    hx-encoding="multipart/form-data"
-    hx-indicator="#form-progress"
-    method="POST"
-    enctype="multipart/form-data"
-    autocomplete="off"
->
-    <!-- ...other fields... -->
-    <div>
-        <label for="avatar">Avatar:</label>
-        <input type="file" name="avatar" id="avatar" accept="image/*">
-        {% if errors.avatar %}
-            <div class="error" for="avatar" style="color: red;">{{ errors.avatar }}</div>
-        {% endif %}
-    </div>
-    <button type="submit">Submit</button>
-    <progress id="form-progress" value="0" max="100"></progress>
-</form>
-```
-
-- On success, your server can return a fragment with the uploaded avatar URL and preview.
-
----
-
-## Error Clearing Script
-
-A generic script clears error messages for any field when focused:
-
-```html
-<script>
-  document.addEventListener("focusin", function (e) {
-    if (e.target.form && e.target.name) {
-      const error = e.target.form.querySelector(
-        `.error[for="${e.target.name}"]`
-      );
-      if (error) error.remove();
-    }
-  });
-</script>
-```
-
-- Works for all fields with `.error[for="fieldname"]`.
-
----
-
-See the rest of this documentation for more on validation, request handling, and UI best practices.
+> **Note:** SproutPHP does not include test files by default. You are free to organize and write tests as you see fit for your project.

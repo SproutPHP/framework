@@ -6,6 +6,10 @@ class ErrorHandler
 {
     public static function register()
     {
+        // Skip registering handlers in CLI or PHPUnit (for testing)
+        if (php_sapi_name() === 'cli' || getenv('PHPUNIT_RUNNING') || defined('PHPUNIT_COMPOSER_INSTALL')) {
+            return;
+        }
         ini_set('display_errors', 0); // Prevent raw output
         ini_set('log_errors', 1);
         error_reporting(E_ALL);
@@ -60,9 +64,23 @@ class ErrorHandler
                 ? "errors/{$code}"
                 : "errors/error"; // fallback
 
-            echo \Core\View\View::render($viewFile, ['error_id' => $errorId]);
+            try {
+                echo \Core\View\View::render($viewFile, ['error_id' => $errorId]);
+            } catch (\Throwable $ex) {
+                echo "<div style='padding:1.5rem; font-family:monospace; background:#fff3f3; border:1px solid #ffb3b3; color:#b30000;'>";
+                echo "<h2>SproutPHP Error</h2>";
+                echo "<strong>Sorry, an error occurred and no error view could be loaded.</strong><br>";
+                echo "Error code: $code<br>";
+                if ($errorId) {
+                    echo "Error ID: $errorId<br>";
+                }
+                echo "</div>";
+            }
         }
 
-        exit;
+        // Only call exit for web requests, not for CLI
+        if (php_sapi_name() !== 'cli' && php_sapi_name() !== 'phpdbg') {
+            exit;
+        }
     }
 }
