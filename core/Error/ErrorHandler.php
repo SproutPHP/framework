@@ -74,6 +74,9 @@ class ErrorHandler
             }
         }
 
-        exit;
+        // Only call exit for web requests, not for CLI
+        if (php_sapi_name() !== 'cli' && php_sapi_name() !== 'phpdbg') {
+            exit;
+        }
     }
 }
