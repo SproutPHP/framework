@@ -36,8 +36,7 @@ SproutPHP is for developers who know PHP, HTML, and CSS, and want to build fast,
 
 ## Learn More
 
-- **Full documentation, features, and advanced usage:** See [DOCS.md](./DOCS.md)
-- **Contributing:** See [CONTRIBUTING.md](./CONTRIBUTING.md) (if available)
+- **Full documentation, features, and advanced usage:** See [DOCS.md](./DOCS.md) or [Documentation](https://sproutphp.github.io/documentation)
 
 **Star this repo** to show your support and follow future updates!
 
