@@ -5,4 +5,4 @@
 <p><strong>CSP Report Only:</strong> {{ csp_report_only ? 'Yes' : 'No' }}</p>
 <p><strong>Environment:</strong> {{ env }}</p>
 <p><strong>Debug Mode:</strong> {{ debug ? 'Enabled' : 'Disabled' }}</p>
-<p style="color: red;">This text should be red in local environment</p> 
+<p style="color: {{ env == 'local' ? 'red' : 'green' }};">This text should be red in local environment</p> 
